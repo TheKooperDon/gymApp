@@ -7,7 +7,7 @@
 </head>
 <body>
   <header>
-    <h1>🏋️‍♂️ Reppy</h1>
+    <h1> Short Stack</h1>
     <nav>
       <ul>
         <li><a href="#">Home</a></li>
@@ -20,9 +20,22 @@
 
   <main>
     <form id="loggerForm">
-        <label for="exercise">Exercise:</label>
-        <input type="text" id="exercise" name="exercise" required />
-      
+    <h2>Select Muscle Group</h2>
+<div id="muscleGroupBtns">
+  <button data-group="Chest">Chest</button>
+  <button data-group="Back">Back</button>
+  <button data-group="Shoulders">Shoulders</button>
+  <button data-group="Arms">Arms</button>
+  <button data-group="Legs">Legs</button>
+  <button data-group="Core">Core</button>
+</div>
+
+<label for="exercise">Exercise:</label>
+<select id="exercise">
+  <option value="">-- Select Exercise --</option>
+</select>
+   
+        
         <label for="weight">Weight (lbs):</label>
         <input type="number" id="weight" name="weight" step="0.5" required />
       

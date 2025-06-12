@@ -1,3 +1,6 @@
+// ===========================
+// 🔁 Global Setup
+// ===========================
 const logList = document.getElementById("logList");
 const form = document.getElementById("loggerForm");
 const repeatBtn = document.getElementById("repeatSet");
@@ -5,6 +8,9 @@ const repeatBtn = document.getElementById("repeatSet");
 let lastSet = null;
 let setCount = 0;
 
+// ===========================
+// 🧠 Exercise Map: All Exercises Grouped by Category
+// ===========================
 const exerciseMap = {
   // Chest
   "Cable Fly": "Chest",
@@ -70,7 +76,7 @@ const exerciseMap = {
   "Dumbbell Walking Lunges": "Legs",
   "Glute Kick Backs": "Legs",
   "Goblet Squat": "Legs",
-  "Leg Press Machine": "Legs", // optional for others
+  "Leg Press Machine": "Legs",
   "Resistance Band Glute Bridge": "Legs",
   "Resistance Band Kickbacks": "Legs",
   "Resistance Band Side Steps": "Legs",
@@ -83,7 +89,43 @@ const exerciseMap = {
   "Plank": "Core",
 };
 
+// ===========================
+// 💪 Muscle Group Buttons: Filter Exercises Based on Selection
+// ===========================
+const exerciseSelect = document.getElementById("exercise");
+const groupButtons = document.querySelectorAll("#muscleGroupBtns button");
 
+const groupedExercises = {};
+for (let exercise in exerciseMap) {
+  const group = exerciseMap[exercise];
+  if (!groupedExercises[group]) groupedExercises[group] = [];
+  groupedExercises[group].push(exercise);
+}
+
+// When user taps a muscle group button, populate the dropdown with matching exercises
+groupButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const group = btn.dataset.group;
+    exerciseSelect.innerHTML = '<option value="">-- Select Exercise --</option>';
+
+    if (groupedExercises[group]) {
+      groupedExercises[group].forEach((exercise) => {
+        const option = document.createElement("option");
+        option.value = exercise;
+        option.textContent = exercise;
+        exerciseSelect.appendChild(option);
+      });
+    }
+  });
+});
+// ===========================
+// 🔄 END: Muscle Group Buttons
+// ===========================
+
+
+// ===========================
+// 📥 Form Submission: Log New Set
+// ===========================
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   const exercise = document.getElementById("exercise").value.trim();
@@ -102,10 +144,17 @@ form.addEventListener("submit", function (e) {
   li.textContent = logEntry;
   logList.appendChild(li);
 
-  lastSet = { exercise, weight, reps }; // store for repeat
-  form.reset(); // clear inputs
+  lastSet = { exercise, weight, reps }; // save last set for repeat use
+  form.reset(); // clear form fields
 });
+// ===========================
+// ✅ END: Set Logging
+// ===========================
 
+
+// ===========================
+// 🔁 Repeat Last Set
+// ===========================
 repeatBtn.addEventListener("click", function () {
   if (!lastSet) return;
 
@@ -119,10 +168,18 @@ repeatBtn.addEventListener("click", function () {
   li.textContent = logEntry;
   logList.appendChild(li);
 });
+// ===========================
+// 🔁 END: Repeat Last Set
+// ===========================
 
+
+// ===========================
+// ✅ Finish Workout Button
+// ===========================
 document.getElementById("finishWorkout").addEventListener("click", function () {
   alert("Workout complete! You beast 😤🔥");
-  // Optional: save to localStorage, JSON, export CSV later
+  // 📝 In the future: Save to localStorage, export to file, etc.
 });
-
-
+// ===========================
+// 🏁 END: Finish Workout Button
+// ===========================
