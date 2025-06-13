@@ -3,54 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="shortstack.css">
+
   <title>Reppy - Logger</title>
 </head>
 <body>
   <header>
     <h1> Short Stack</h1>
     <nav>
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Stats</a></li>
-        <li><a href="#">History</a></li>
-        <li><a href="#">Profile</a></li>
-      </ul>
+      <a href="index.html">Home</a>
+      <a href="logger.html">Log Workout</a>
+      <a href="profile.html">Profile</a>
+      <a href="library.html">Exercises</a>
     </nav>
   </header>
 
   <main>
-    <form id="loggerForm">
-    <h2>Select Muscle Group</h2>
-<div id="muscleGroupBtns">
-  <button data-group="Chest">Chest</button>
-  <button data-group="Back">Back</button>
-  <button data-group="Shoulders">Shoulders</button>
-  <button data-group="Arms">Arms</button>
-  <button data-group="Legs">Legs</button>
-  <button data-group="Core">Core</button>
+  <!-- Muscle Group Selection -->
+<div class="form-row">
+  <label>Select Muscle Group:</label>
+  <div id="muscleGroupBtns" class="button-wrap">
+    <button type="button" data-group="Chest">Chest</button>
+    <button type="button" data-group="Back">Back</button>
+    <button type="button" data-group="Shoulders">Shoulders</button>
+    <button type="button" data-group="Arms">Arms</button>
+    <button type="button" data-group="Legs">Legs</button>
+    <button type="button" data-group="Core">Core</button>
+  </div>
 </div>
 
-<label for="exercise">Exercise:</label>
-<select id="exercise">
-  <option value="">-- Select Exercise --</option>
-</select>
-   
-        
-        <label for="weight">Weight (lbs):</label>
-        <input type="number" id="weight" name="weight" step="0.5" required />
-      
-        <label for="reps">Reps:</label>
-        <input type="number" id="reps" name="reps" required />
-      
-        <button type="submit">+ Add Set</button>
-        <button type="button" id="repeatSet">🔁 Repeat Last Set</button>
-        <button type="button" id="finishWorkout">✅ Finish Workout</button>
-      </form>
-      <section id="logPreview">
-        <h2>Logged Sets (This Session)</h2>
-        <ul id="logList"></ul>
-        </section>
+<!-- Exercise Dropdown -->
+<div class="form-row">
+  <label for="exercise">Exercise:</label>
+  <select id="exercise" name="exercise" required></select>
+</div>
+
+<!-- Weight Input -->
+<div class="form-row">
+  <label for="weight">Weight (lbs):</label>
+  <input type="number" id="weight" name="weight" step="0.5" required />
+</div>
+
+<!-- Reps Input -->
+<div class="form-row">
+  <label for="reps">Reps:</label>
+  <input type="number" id="reps" name="reps" required />
+</div>
+
+<!-- Action Buttons: Add + Repeat -->
+<div class="button-row">
+  <button type="submit">+ Add Set</button>
+  <button type="button" id="repeatSet">🔁 Repeat Last Set</button>
+</div>
+
+<!-- Finish Button Separate -->
+<div class="form-row">
+  <button type="button" id="finishWorkout">✅ Finish Workout</button>
+</div>
   </main>
+  <footer>
+    <nav>
+      <a href="about.html">About</a>
+      <a href="settings.html">Settings</a>
+      <a href="export.html">Export</a>
+      <a href="login.html">Login</a>
+    </nav>
+    <p>&copy; 2025 Short Stack. Built with reps, sets, and love. 💪</p>
+  </footer>
 
   <script src="logger.js"></script>
 </body>

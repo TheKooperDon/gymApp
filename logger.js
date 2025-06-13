@@ -106,7 +106,8 @@ for (let exercise in exerciseMap) {
 groupButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.dataset.group;
-    exerciseSelect.innerHTML = '<option value="">-- Select Exercise --</option>';
+    exerciseSelect.innerHTML = `<option value="">-- Select ${group} Exercise --</option>`;
+
 
     if (groupedExercises[group]) {
       groupedExercises[group].forEach((exercise) => {

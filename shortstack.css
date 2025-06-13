@@ -1,0 +1,90 @@
+
+/* shortstack.css — Mobile-first styling for Short Stack */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  max-width: 430px;
+  margin-inline: auto;
+  background-color: #f9f9f9;
+  color: #222;
+}
+
+header, footer {
+  background-color: #222;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0.5rem;
+  font-weight: bold;
+}
+
+main {
+  padding: 1rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+label {
+  margin-bottom: 0.25rem;
+}
+
+footer nav {
+  justify-content: center;
+}
+
+footer a {
+  color: #ccc;
+  text-decoration: none;
+  margin: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+label {
+  margin-bottom: 0.25rem;
+}
+
+.button-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.button-wrap button {
+  flex: 1 1 30%;
+  min-width: 90px;
+}
+
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.button-row button {
+  flex: 1;
+}
