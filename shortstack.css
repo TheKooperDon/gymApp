@@ -1,16 +1,21 @@
 
-/* shortstack.css — Mobile-first styling for Short Stack */
+/* ===================================================
+   shortstack.css â€” Global styling for Short Stack app
+   Applies to all pages unless noted otherwise
+=================================================== */
 
+/* ----- GLOBAL BODY SETTINGS ----- */
 body {
   margin: 0;
   padding: 0;
   font-family: system-ui, sans-serif;
-  max-width: 430px;
+  max-width: 430px; /* Targeting iPhone 16 screen size */
   margin-inline: auto;
   background-color: #f9f9f9;
   color: #222;
 }
 
+/* ----- HEADER & FOOTER STYLING ----- */
 header, footer {
   background-color: #222;
   color: white;
@@ -18,6 +23,7 @@ header, footer {
   text-align: center;
 }
 
+/* ----- NAVIGATION LINKS ----- */
 nav {
   display: flex;
   justify-content: space-around;
@@ -32,20 +38,22 @@ nav a {
   font-weight: bold;
 }
 
+/* ----- MAIN LAYOUT (ALL PAGES) ----- */
 main {
-  padding: 1rem;
-}
-
-.form-row {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
+  align-items: center;
+  padding: 1rem;
+  text-align: center;
 }
 
-label {
-  margin-bottom: 0.25rem;
+/* ----- FORM CONTAINER ----- */
+form {
+  width: 100%;
+  max-width: 400px;
 }
 
+/* ----- FOOTER LINKS ----- */
 footer nav {
   justify-content: center;
 }
@@ -57,20 +65,31 @@ footer a {
   font-size: 0.9rem;
 }
 
+
+/* ===================================================
+   LOGGER.HTML SPECIFIC STYLING
+=================================================== */
+
+/* ----- FORM ROWS: INPUT BLOCKS STACKED ----- */
 .form-row {
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin-bottom: 1rem;
+  width: 100%;
 }
 
 label {
   margin-bottom: 0.25rem;
 }
 
+/* ----- MUSCLE GROUP BUTTON WRAP ----- */
 .button-wrap {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .button-wrap button {
@@ -78,13 +97,33 @@ label {
   min-width: 90px;
 }
 
+/* ----- INPUT GROUPS (WEIGHT / REPS) ----- */
+.input-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.input-group input {
+  flex: 1;
+  max-width: 100px;
+  text-align: center;
+  font-size: 1.1rem;
+  padding: 0.5rem;
+}
+
+/* ----- BUTTON ROW: ADD / REPEAT ----- */
 .button-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  width: 100%;
 }
 
 .button-row button {
   flex: 1;
+  max-width: 150px;
 }
