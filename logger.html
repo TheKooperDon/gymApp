@@ -35,8 +35,11 @@
 <!-- Exercise Dropdown -->
 <div class="form-row">
   <label for="exercise">Exercise:</label>
-  <select id="exercise" name="exercise" required></select>
+  <select id="exercise" name="exercise" required>
+    <option value="">-- Select a muscle group first --</option>
+  </select>
 </div>
+
 
 <!-- Weight Input -->
 <div class="form-row">
@@ -47,6 +50,26 @@
     <button type="button" class="adjust-btn" data-target="weight" data-action="increase">+</button>
   </div>
 </div>
+
+<!-- Inside your HTML body, below the weight input group -->
+<div id="weightQuickPad" class="quick-pad" style="display: none;">
+  <div class="pad-row">
+    <button type="button" class="pad-btn">5</button>
+    <button type="button" class="pad-btn">10</button>
+    <button type="button" class="pad-btn">15</button>
+  </div>
+  <div class="pad-row">
+    <button type="button" class="pad-btn">20</button>
+    <button type="button" class="pad-btn">25</button>
+    <button type="button" class="pad-btn">30</button>
+  </div>
+  <div class="pad-row">
+    <button type="button" class="pad-btn">35</button>
+    <button type="button" class="pad-btn">40</button>
+    <button type="button" class="pad-btn">Clear</button>
+  </div>
+</div>
+<!-- end of the quick pad -->
 
 <!-- Reps Input -->
 <div class="form-row">

@@ -106,7 +106,7 @@ for (let exercise in exerciseMap) {
 groupButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.dataset.group;
-    exerciseSelect.innerHTML = `<option value="">-- Select ${group} Exercise --</option>`;
+    exerciseSelect.innerHTML = `<option value="">-- Select an exercise from ${group} --</option>`;
 
 
     if (groupedExercises[group]) {
@@ -122,6 +122,31 @@ groupButtons.forEach((btn) => {
 // ===========================
 // 🔄 END: Muscle Group Buttons
 // ===========================
+
+
+// Start of the + - Buttons
+document.querySelectorAll(".adjust-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const inputId = btn.dataset.target;
+    const action = btn.dataset.action;
+    const input = document.getElementById(inputId);
+
+    let value = parseFloat(input.value) || 0;
+
+    // 👇 Set step sizes
+    const step = inputId === "weight" ? 5 : 1;
+
+    if (action === "increase") {
+      value += step;
+    } else if (action === "decrease") {
+      value = Math.max(0, value - step);
+    }
+
+    // Update field
+    input.value = inputId === "weight" ? value : Math.round(value);
+  });
+});
+// end of the + - buttons
 
 
 // ===========================
@@ -184,3 +209,34 @@ document.getElementById("finishWorkout").addEventListener("click", function () {
 // ===========================
 // 🏁 END: Finish Workout Button
 // ===========================
+
+
+
+
+
+
+// Toggle pad visibility when weight input is focused
+const weightInput = document.getElementById("weight");
+const weightPad = document.getElementById("weightQuickPad");
+
+weightInput.addEventListener("focus", () => {
+  weightPad.style.display = "flex";
+});
+
+weightInput.addEventListener("blur", () => {
+  setTimeout(() => weightPad.style.display = "none", 200);
+});
+
+// Handle pad button clicks
+document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const val = btn.textContent;
+    if (val === "Clear") {
+      weightInput.value = "";
+    } else {
+      weightInput.value = val;
+    }
+  });
+});
+
+// end of the toggle pad js 

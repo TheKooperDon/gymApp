@@ -127,3 +127,31 @@ label {
   flex: 1;
   max-width: 150px;
 }
+
+
+/* end of button rows add and repeat*/
+
+/* Quick pad styling */
+.quick-pad {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pad-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pad-btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #eee;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* end of the quick pad for the + - buttons */
