@@ -239,4 +239,4 @@ document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
   });
 });
 
-// end of the toggle pad js 
+//end of toggle pad
