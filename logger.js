@@ -235,6 +235,7 @@ document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
       weightInput.value = "";
     } else {
       weightInput.value = val;
+      weightInput.focus(); // keep pad open in case user keeps tapping
     }
   });
 });
