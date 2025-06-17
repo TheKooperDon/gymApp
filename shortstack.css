@@ -132,6 +132,16 @@ label {
 /* end of button rows add and repeat*/
 
 /* Quick pad styling */
+.pad-toggle {
+  margin-top: 0.5rem;
+  background-color: #ccc;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .quick-pad {
   margin-top: 0.5rem;
   display: flex;
@@ -153,5 +163,6 @@ label {
   border-radius: 4px;
   cursor: pointer;
 }
+
 
 /* end of the quick pad for the + - buttons */

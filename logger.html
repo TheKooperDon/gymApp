@@ -41,13 +41,33 @@
 </div>
 
 
-<!-- Weight Input -->
+
+<!-- Weight Input with Pad Toggle Button Below -->
 <div class="form-row">
   <label for="weight">Weight (lbs):</label>
   <div class="input-group">
     <button type="button" class="adjust-btn" data-target="weight" data-action="decrease">-</button>
     <input type="number" id="weight" name="weight" inputmode="decimal" />
     <button type="button" class="adjust-btn" data-target="weight" data-action="increase">+</button>
+  </div>
+  <button id="togglePadBtn" type="button" class="pad-toggle">Quick Pick</button>
+</div>
+<!-- button pad here-->
+<div id="weightQuickPad" class="quick-pad" style="display: none;">
+  <div class="pad-row">
+    <button type="button" class="pad-btn">5</button>
+    <button type="button" class="pad-btn">10</button>
+    <button type="button" class="pad-btn">15</button>
+  </div>
+  <div class="pad-row">
+    <button type="button" class="pad-btn">20</button>
+    <button type="button" class="pad-btn">25</button>
+    <button type="button" class="pad-btn">30</button>
+  </div>
+  <div class="pad-row">
+    <button type="button" class="pad-btn">35</button>
+    <button type="button" class="pad-btn">40</button>
+    <button type="button" class="pad-btn">Clear</button>
   </div>
 </div>
 

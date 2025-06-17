@@ -215,7 +215,28 @@ document.getElementById("finishWorkout").addEventListener("click", function () {
 
 
 
+const weightInput = document.getElementById("weight");
+const weightPad = document.getElementById("weightQuickPad");
+const togglePadBtn = document.getElementById("togglePadBtn");
+
+// Toggle pad on button click
+togglePadBtn.addEventListener("click", () => {
+  weightPad.style.display = (weightPad.style.display === "flex") ? "none" : "flex";
+});
+
+// Handle pad button clicks
+document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const val = btn.textContent;
+    if (val === "Clear") {
+      weightInput.value = "";
+    } else {
+      weightInput.value = val;
+    }
+  });
+});
 // Toggle pad visibility when weight input is focused
+/* 
 const weightInput = document.getElementById("weight");
 const weightPad = document.getElementById("weightQuickPad");
 
@@ -239,5 +260,5 @@ document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
     }
   });
 });
-
+*/
 //end of toggle pad
