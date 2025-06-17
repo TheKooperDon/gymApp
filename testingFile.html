@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Short Stack Test - Quick Pad</title>
+</head>
+<body>
+
+  <h2>Weight Input with Quick Pad</h2>
+
+  <div class="form-row">
+    <label for="weight">Weight (lbs):</label>
+    <div class="input-group">
+      <button type="button" class="adjust-btn" data-target="weight" data-action="decrease">-</button>
+      <input type="number" id="weight" name="weight" inputmode="decimal" />
+      <button type="button" class="adjust-btn" data-target="weight" data-action="increase">+</button>
+    </div>
+    <button id="togglePadBtn" type="button">Quick Pick</button>
+  </div>
+
+  <div id="weightQuickPad" style="display: none;">
+    <div>
+      <button type="button" class="pad-btn">5</button>
+      <button type="button" class="pad-btn">10</button>
+      <button type="button" class="pad-btn">15</button>
+    </div>
+    <div>
+      <button type="button" class="pad-btn">20</button>
+      <button type="button" class="pad-btn">25</button>
+      <button type="button" class="pad-btn">30</button>
+    </div>
+    <div>
+      <button type="button" class="pad-btn">35</button>
+      <button type="button" class="pad-btn">40</button>
+      <button type="button" class="pad-btn">Clear</button>
+    </div>
+  </div>
+
+  <script>
+    const weightInput = document.getElementById("weight");
+    const weightPad = document.getElementById("weightQuickPad");
+    const togglePadBtn = document.getElementById("togglePadBtn");
+
+    // Toggle the pad when clicking the toggle button
+    togglePadBtn.addEventListener("click", () => {
+      weightPad.style.display = (weightPad.style.display === "flex") ? "none" : "flex";
+    });
+
+    // Handle quick pad button clicks
+    document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const val = btn.textContent;
+        if (val === "Clear") {
+          weightInput.value = "";
+        } else {
+          weightInput.value = val;
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -209,12 +209,33 @@ document.getElementById("finishWorkout").addEventListener("click", function () {
 // ===========================
 // 🏁 END: Finish Workout Button
 // ===========================
+togglePadBtn.addEventListener("click", () => {
+  console.log("Quick Pick button clicked");
+});
 
 
+window.addEventListener("DOMContentLoaded", () => {
+  const weightInput = document.getElementById("weight");
+  const weightPad = document.getElementById("weightQuickPad");
+  const togglePadBtn = document.getElementById("togglePadBtn");
 
+  togglePadBtn.addEventListener("click", () => {
+    weightPad.style.display = (weightPad.style.display === "flex") ? "none" : "flex";
+  });
 
+  document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const val = btn.textContent;
+      if (val === "Clear") {
+        weightInput.value = "";
+      } else {
+        weightInput.value = val;
+      }
+    });
+  });
+});
 
-
+/*
 const weightInput = document.getElementById("weight");
 const weightPad = document.getElementById("weightQuickPad");
 const togglePadBtn = document.getElementById("togglePadBtn");
@@ -235,6 +256,13 @@ document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
     }
   });
 });
+
+
+
+
+*/
+
+
 // Toggle pad visibility when weight input is focused
 /* 
 const weightInput = document.getElementById("weight");

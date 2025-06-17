@@ -50,9 +50,23 @@
     <input type="number" id="weight" name="weight" inputmode="decimal" />
     <button type="button" class="adjust-btn" data-target="weight" data-action="increase">+</button>
   </div>
-  <button id="togglePadBtn" type="button" class="pad-toggle">Quick Pick</button>
 </div>
-<!-- button pad here-->
+
+
+
+<!-- This is your toggle button -->
+<button id="togglePadBtn" type="button">Quick Pick</button>
+
+<!-- This is the pad it should show/hide -->
+<div id="weightQuickPad" style="display: none;">
+  <div>
+    <button type="button" class="pad-btn">5</button>
+    <button type="button" class="pad-btn">10</button>
+  </div>
+</div>
+
+
+<!-- special button pad
 <div id="weightQuickPad" class="quick-pad" style="display: none;">
   <div class="pad-row">
     <button type="button" class="pad-btn">5</button>
@@ -71,25 +85,7 @@
   </div>
 </div>
 
-<!-- Quick Pad Below Weight Input -->
-<div id="weightQuickPad" class="quick-pad" style="display: none;">
-  <div class="pad-row">
-    <button type="button" class="pad-btn">5</button>
-    <button type="button" class="pad-btn">10</button>
-    <button type="button" class="pad-btn">15</button>
-  </div>
-  <div class="pad-row">
-    <button type="button" class="pad-btn">20</button>
-    <button type="button" class="pad-btn">25</button>
-    <button type="button" class="pad-btn">30</button>
-  </div>
-  <div class="pad-row">
-    <button type="button" class="pad-btn">35</button>
-    <button type="button" class="pad-btn">40</button>
-    <button type="button" class="pad-btn">Clear</button>
-  </div>
-</div>
-<!-- end of the quick pad -->
+ -->
 
 <!-- Reps Input -->
 <div class="form-row">
@@ -127,4 +123,9 @@
 
   <script src="logger.js"></script>
 </body>
+
+<script>
+
+</script>
+
 </html>
