@@ -128,7 +128,28 @@ label {
   max-width: 150px;
 }
 
+/*Log Preview */
 
+#logPreview {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+#logTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#logTable th,
+#logTable td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+#logTable th {
+  background-color: #f0f0f0;
+}
 /* end of button rows add and repeat*/
 
 /* Quick pad styling */

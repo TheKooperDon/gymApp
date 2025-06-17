@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,6 @@
   <link rel="stylesheet" href="shortstack.css">
   <title>Reppy - Logger</title>
   <script src="logger.js" defer></script>
-
 </head>
 <body>
   <header>
@@ -20,98 +20,81 @@
   </header>
 
   <main>
-  <!-- Muscle Group Selection -->
-<div class="form-row">
-  <label>Select Muscle Group:</label>
-  <div id="muscleGroupBtns" class="button-wrap">
-    <button type="button" data-group="Chest">Chest</button>
-    <button type="button" data-group="Back">Back</button>
-    <button type="button" data-group="Shoulders">Shoulders</button>
-    <button type="button" data-group="Arms">Arms</button>
-    <button type="button" data-group="Legs">Legs</button>
-    <button type="button" data-group="Core">Core</button>
-  </div>
-</div>
+    <form id="loggerForm">
+      <div class="form-row">
+        <label>Select Muscle Group:</label>
+        <div id="muscleGroupBtns" class="button-wrap">
+          <button type="button" data-group="Chest">Chest</button>
+          <button type="button" data-group="Back">Back</button>
+          <button type="button" data-group="Shoulders">Shoulders</button>
+          <button type="button" data-group="Arms">Arms</button>
+          <button type="button" data-group="Legs">Legs</button>
+          <button type="button" data-group="Core">Core</button>
+        </div>
+      </div>
 
-<!-- Exercise Dropdown -->
-<div class="form-row">
-  <label for="exercise">Exercise:</label>
-  <select id="exercise" name="exercise" required>
-    <option value="">-- Select a muscle group first --</option>
-  </select>
-</div>
+      <div class="form-row">
+        <label for="exercise">Exercise:</label>
+        <select id="exercise" name="exercise" required>
+          <option value="">-- Select a muscle group first --</option>
+        </select>
+      </div>
 
+      <div class="form-row">
+        <label for="weight">Weight (lbs):</label>
+        <div class="input-group">
+          <button type="button" data-target="weight" data-action="decrease">-</button>
+          <input type="number" id="weight" name="weight" />
+          <button type="button" data-target="weight" data-action="increase">+</button>
+        </div>
+        <button id="togglePadBtn" type="button">Quick Pick</button>
+      </div>
 
+      <div id="weightQuickPad" style="display: none;">
+        <div>
+          <button type="button" class="pad-btn">5</button>
+          <button type="button" class="pad-btn">10</button>
+          <button type="button" class="pad-btn">Clear</button>
+        </div>
+      </div>
 
-<!-- Weight Input with Pad Toggle Button Below -->
-<div class="form-row">
-  <label for="weight">Weight (lbs):</label>
-  <div class="input-group">
-    <button type="button" class="adjust-btn" data-target="weight" data-action="decrease">-</button>
-    <input type="number" id="weight" name="weight" inputmode="decimal" />
-    <button type="button" class="adjust-btn" data-target="weight" data-action="increase">+</button>
-  </div>
-</div>
+      <div class="form-row">
+        <label for="reps">Reps:</label>
+        <div class="input-group">
+          <button type="button" class="adjust-btn" data-target="reps" data-action="decrease">-</button>
+          <input type="number" id="reps" name="reps" inputmode="numeric" />
+          <button type="button" class="adjust-btn" data-target="reps" data-action="increase">+</button>
+        </div>
+      </div>
 
+      <div class="button-row">
+        <button type="submit">+ Add Set</button>
+        <button type="button" id="repeatSet">Repeat Last Set</button>
+      </div>
 
+      <div class="form-row">
+        <button type="button" id="finishWorkout">Finish Workout</button>
+      </div>
+    </form>
 
-<!-- This is your toggle button -->
-<button id="togglePadBtn" type="button">Quick Pick</button>
-
-<!-- This is the pad it should show/hide -->
-<div id="weightQuickPad" style="display: none;">
-  <div>
-    <button type="button" class="pad-btn">5</button>
-    <button type="button" class="pad-btn">10</button>
-  </div>
-</div>
-
-
-<!-- special button pad
-<div id="weightQuickPad" class="quick-pad" style="display: none;">
-  <div class="pad-row">
-    <button type="button" class="pad-btn">5</button>
-    <button type="button" class="pad-btn">10</button>
-    <button type="button" class="pad-btn">15</button>
-  </div>
-  <div class="pad-row">
-    <button type="button" class="pad-btn">20</button>
-    <button type="button" class="pad-btn">25</button>
-    <button type="button" class="pad-btn">30</button>
-  </div>
-  <div class="pad-row">
-    <button type="button" class="pad-btn">35</button>
-    <button type="button" class="pad-btn">40</button>
-    <button type="button" class="pad-btn">Clear</button>
-  </div>
-</div>
-
- -->
-
-<!-- Reps Input -->
-<div class="form-row">
-  <label for="reps">Reps:</label>
-  <div class="input-group">
-    <button type="button" class="adjust-btn" data-target="reps" data-action="decrease">-</button>
-    <input type="number" id="reps" name="reps" inputmode="numeric" />
-    <button type="button" class="adjust-btn" data-target="reps" data-action="increase">+</button>
-  </div>
-</div>
-
-
-
-
-<!-- Action Buttons: Add + Repeat -->
-<div class="button-row">
-  <button type="submit">+ Add Set</button>
-  <button type="button" id="repeatSet">Repeat Last Set</button>
-</div>
-
-<!-- Finish Button Separate -->
-<div class="form-row">
-  <button type="button" id="finishWorkout">Finish Workout</button>
-</div>
+    <section id="logPreview">
+      <h2>Workout Log</h2>
+      <table id="logTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Exercise</th>
+            <th>Weight</th>
+            <th>Reps</th>
+          </tr>
+        </thead>
+        <tbody id="logBody">
+          <!-- New rows get added here -->
+        </tbody>
+      </table>
+    </section>
   </main>
+
   <footer>
     <nav>
       <a href="about.html">About</a>
@@ -121,9 +104,5 @@
     </nav>
     <p>&copy; 2025 Short Stack. Built with reps, sets, and love. </p>
   </footer>
-
 </body>
-
-
-
 </html>

@@ -150,50 +150,87 @@ document.querySelectorAll(".adjust-btn").forEach((btn) => {
 
 
 // ===========================
-// 📥 Form Submission: Log New Set
+// 📥 Form Submission (safely)
 // ===========================
-form.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const exercise = document.getElementById("exercise").value.trim();
-  const weight = document.getElementById("weight").value;
-  const reps = document.getElementById("reps").value;
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ DOM loaded and script running");
 
-  if (!exercise || !weight || !reps) return;
+  const form = document.getElementById("loggerForm");
+  console.log("🧾 Form grabbed:", form);
 
-  setCount++;
-  const today = new Date();
-  const date = today.toLocaleDateString();
-  const dayOfWeek = today.toLocaleDateString("en-US", { weekday: 'long' });
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      console.log("🚀 Form submitted!");
 
-  const logEntry = `${setCount}. ${dayOfWeek} ${date} - ${exercise} | ${weight} lbs x ${reps}`;
-  const li = document.createElement("li");
-  li.textContent = logEntry;
-  logList.appendChild(li);
+      const exercise = document.getElementById("exercise").value.trim();
+      const weight = document.getElementById("weight").value;
+      const reps = document.getElementById("reps").value;
 
-  lastSet = { exercise, weight, reps }; // save last set for repeat use
-  form.reset(); // clear form fields
+      console.log("💪 Input values →", { exercise, weight, reps });
+
+      if (!exercise || !weight || !reps) {
+        console.log("❌ One or more inputs missing.");
+        return;
+      }
+
+      setCount++;
+      const today = new Date();
+      const date = today.toLocaleDateString();
+      const dayOfWeek = today.toLocaleDateString("en-US", { weekday: 'long' });
+
+      const logBody = document.getElementById("logBody");
+      console.log("📊 Table body grabbed:", logBody);
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${setCount}</td>
+        <td>${exercise}</td>
+        <td>${weight} lbs</td>
+        <td>${reps}</td>
+      `;
+
+      logBody.appendChild(row);
+      console.log("✅ Row added:", row);
+
+      lastSet = { exercise, weight, reps };
+      form.reset();
+      console.log("♻️ Form reset");
+    });
+  } else {
+    console.log("❌ loggerForm not found");
+  }
 });
 // ===========================
-// ✅ END: Set Logging
+// 📥 END Form Submission (safely)
 // ===========================
-
 
 // ===========================
 // 🔁 Repeat Last Set
 // ===========================
 repeatBtn.addEventListener("click", function () {
-  if (!lastSet) return;
+  console.log("🔁 Repeat button clicked");
+
+  if (!lastSet) {
+    console.log("❌ No last set found");
+    return;
+  }
 
   setCount++;
-  const today = new Date();
-  const date = today.toLocaleDateString();
-  const dayOfWeek = today.toLocaleDateString("en-US", { weekday: 'long' });
+  const logBody = document.getElementById("logBody");
+  console.log("📊 Table body (repeat):", logBody);
 
-  const logEntry = `${setCount}. ${dayOfWeek} ${date} - ${lastSet.exercise} | ${lastSet.weight} lbs x ${lastSet.reps}`;
-  const li = document.createElement("li");
-  li.textContent = logEntry;
-  logList.appendChild(li);
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${setCount}</td>
+    <td>${lastSet.exercise}</td>
+    <td>${lastSet.weight} lbs</td>
+    <td>${lastSet.reps}</td>
+  `;
+  logBody.appendChild(row);
+  console.log("✅ Repeated row added:", row);
 });
+
 // ===========================
 // 🔁 END: Repeat Last Set
 // ===========================
@@ -209,6 +246,39 @@ document.getElementById("finishWorkout").addEventListener("click", function () {
 // ===========================
 // 🏁 END: Finish Workout Button
 // ===========================
+
+
+// JS for quick Pad
+console.log("Logger.js is loaded");
+
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM is ready");
+
+  const weightInput = document.getElementById("weight");
+  const weightPad = document.getElementById("weightQuickPad");
+  const togglePadBtn = document.getElementById("togglePadBtn");
+
+  if (!togglePadBtn || !weightPad || !weightInput) {
+    console.log("Some elements are missing.");
+    return;
+  }
+
+  togglePadBtn.addEventListener("click", () => {
+    console.log("Toggle clicked");
+    weightPad.style.display = (weightPad.style.display === "flex") ? "none" : "flex";
+  });
+
+  document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const val = btn.textContent;
+      console.log(`Pad button clicked: ${val}`);
+      weightInput.value = val === "Clear" ? "" : val;
+    });
+  });
+});
+
+//end of quick pad 
+/*
 togglePadBtn.addEventListener("click", () => {
   console.log("Quick Pick button clicked");
 });
@@ -234,7 +304,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-
+*/
 /*
 const weightInput = document.getElementById("weight");
 const weightPad = document.getElementById("weightQuickPad");
