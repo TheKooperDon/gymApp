@@ -18,6 +18,8 @@ Most logged exercise
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Short Stack - Profile</title>
   <link rel="stylesheet" href="shortstack.css" />
+  <script src="profile.js" defer></script>
+
 </head>
 <body>
   <header>
@@ -32,12 +34,10 @@ Most logged exercise
 
   <main>
     <h2>Your Profile & Stats</h2>
-    <p>This is where your workout stats and personal info will appear.</p>
-    <ul>
-      <li>Total Workouts: 0</li>
-      <li>Most Logged Muscle Group: —</li>
-      <li>Recent PRs: —</li>
-    </ul>
+    <section id="workoutHistory">
+      <h3>Workout History</h3>
+      <div id="workoutList"></div>
+    </section>
   </main>
 
   <footer>
