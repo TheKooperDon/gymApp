@@ -1,39 +1,70 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Log In</title>
-  <link rel="stylesheet" href="shortstack.css">
-
+  <title>Short Stack - Profile</title>
+  <link rel="stylesheet" href="shortstack.css" />
 </head>
 <body>
-    
-
-
   <header>
-    <h1>Log In</h1>
-
+    <h1>Short Stack</h1>
     <nav>
-      <ul>
-        <li><a href="#log">Log Workout</a></li>
-        <li><a href="#stats">Stats</a></li>
-        <li><a href="#history">History</a></li>
-        <li><a href="#profile">Profile</a></li>
-      </ul>
+      <a href="index.html">Home</a>
+      <a href="logger.html">Log Workout</a>
+      <a href="profile.html">Profile</a>
+      <a href="library.html">Exercises</a>
     </nav>
   </header>
 
-  <form action="/submit-login" method="POST">
-    <label for="email">Email:</label><br />
-    <input type="email" id="email" name="email" required /><br /><br />
+  <main>
+    <h2>Your Profile & Stats</h2>
+    <div id="workoutList"></div>
+  </main>
 
-    <label for="password">Password:</label><br />
-    <input type="password" id="password" name="password" required /><br /><br />
+  <footer>
+    <nav>
+      <a href="about.html">About</a>
+      <a href="settings.html">Settings</a>
+      <a href="export.html">Export</a>
+      <a href="login.html">Login</a>
+    </nav>
+    <p>&copy; 2025 Short Stack. Built with reps, sets, and love.</p>
+  </footer>
 
-    <button type="submit">Log In</button>
-  </form>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const workoutList = document.getElementById("workoutList");
 
-  <p>Don't have an account? <a href="signup.html">Create one here</a></p>
+      const keys = Object.keys(localStorage).filter(key => key.startsWith("workout_"));
+
+      if (keys.length === 0) {
+        workoutList.innerHTML = "<p>No workouts logged yet, go hit the gym 😤</p>";
+        return;
+      }
+
+      keys.sort(); 
+      keys.reverse(); 
+
+      keys.forEach(key => {
+        const date = key.replace("workout_", "");
+        const workoutData = JSON.parse(localStorage.getItem(key));
+
+        let html = `<h4>Workout for ${date}</h4><ul>`;
+        let totalVolume = 0;
+
+        Object.values(workoutData).forEach(entry => {
+          const { exercise, weight, reps, sets } = entry;
+          const volume = weight * reps * sets;
+          totalVolume += volume;
+          html += `<li>${exercise}: ${sets} sets x ${reps} reps @ ${weight} lbs</li>`;
+        });
+
+        html += `</ul><p><strong>Total Volume:</strong> ${totalVolume} lbs</p><hr>`;
+        workoutList.innerHTML += html;
+      });
+    });
+  </script>
 </body>
 </html>
