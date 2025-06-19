@@ -237,6 +237,13 @@ document.querySelectorAll("button[data-action]").forEach((btn) => {
     summaryText.textContent = `Workout saved for ${today} — ${totalSets} sets, ${totalReps} reps, ${totalVolume} lbs lifted.`;
     summarySection.style.display = "block";
 
+    // Save workout to localStorage for profile page
+    const dateKey = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    localStorage.setItem(
+      `workout_${dateKey}`,
+      JSON.stringify(grouped)
+    );
+
     alert("Workout saved! 💾 Time to go flex 💪");
   });
 
