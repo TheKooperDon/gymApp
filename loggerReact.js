@@ -87,6 +87,7 @@ function Logger() {
   const [log, setLog] = useState([]);
   const [lastSet, setLastSet] = useState(null);
   const [summary, setSummary] = useState("");
+  const [showPad, setShowPad] = useState(false);
 
   function addSet(e) {
     e.preventDefault();
@@ -133,47 +134,73 @@ function Logger() {
     alert("Workout saved! 💾 Time to go flex 💪");
   }
 
+  function handlePad(val) {
+    if (val === "Clear") setWeight("");
+    else setWeight(val);
+    setShowPad(false);
+  }
+
   return (
-    <div>
-      <h2>Log Workout</h2>
-      <form onSubmit={addSet}>
-        <div>
-          <label>Select Muscle Group:</label>
-          <div>
+    <div className="logger-root">
+      <h2 className="text-center">Log Workout</h2>
+      <form onSubmit={addSet} className="logger-form">
+        <div className="form-row">
+          <label className="text-center">Select Muscle Group:</label>
+          <div className="button-wrap">
             {Object.keys(groupedExercises).map(group => (
-              <button type="button" key={group} onClick={() => setSelectedGroup(group)}>
-                {group}
-              </button>
+              <button type="button" key={group} onClick={() => setSelectedGroup(group)}>{group}</button>
             ))}
           </div>
         </div>
-        <div>
-          <label>Exercise:</label>
-          <select value={exercise} onChange={e => setExercise(e.target.value)}>
-            <option value="">-- Select a muscle group first --</option>
+        <div className="form-row">
+          <label htmlFor="exercise">Exercise:</label>
+          <select id="exercise" name="exercise" value={exercise} onChange={e => setExercise(e.target.value)} required>
+            <option value="">
+              {selectedGroup
+                ? `-- Select ${selectedGroup} Exercise --`
+                : "-- Select a muscle group first --"}
+            </option>
             {selectedGroup && groupedExercises[selectedGroup].map(ex => (
               <option key={ex} value={ex}>{ex}</option>
             ))}
           </select>
         </div>
-        <div>
-          <label>Weight (lbs):</label>
-          <input type="number" value={weight} onChange={e => setWeight(e.target.value)} />
+        <div className="form-row">
+          <label htmlFor="weight">Weight (lbs):</label>
+          <div className="input-group">
+            <button type="button" onClick={() => setWeight(w => Math.max(0, Number(w) - 5))}>-</button>
+            <input type="number" id="weight" name="weight" value={weight} onChange={e => setWeight(e.target.value)} />
+            <button type="button" onClick={() => setWeight(w => Number(w) + 5)}>+</button>
+          </div>
+          <button type="button" onClick={() => setShowPad(p => !p)} style={{ marginTop: 8 }}>Quick Pick</button>
+          {showPad && (
+            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+              {[5, 10, 15, 20, 25, 30, 35, 40].map(val => (
+                <button type="button" className="pad-btn" key={val} onClick={() => handlePad(val)}>{val}</button>
+              ))}
+              <button type="button" className="pad-btn" onClick={() => handlePad("Clear")}>Clear</button>
+            </div>
+          )}
         </div>
-        <div>
-          <label>Reps:</label>
-          <input type="number" value={reps} onChange={e => setReps(e.target.value)} />
+        <div className="form-row">
+          <label htmlFor="reps">Reps:</label>
+          <div className="input-group">
+            <button type="button" onClick={() => setReps(r => Math.max(0, Number(r) - 1))}>-</button>
+            <input type="number" id="reps" name="reps" value={reps} onChange={e => setReps(e.target.value)} />
+            <button type="button" onClick={() => setReps(r => Number(r) + 1)}>+</button>
+          </div>
         </div>
-        <div>
+        <div className="button-row">
           <button type="submit">+ Add Set</button>
           <button type="button" onClick={repeatSet}>Repeat Last Set</button>
         </div>
-        <div>
+        <div className="form-row">
           <button type="button" onClick={finishWorkout}>Finish Workout</button>
         </div>
       </form>
-      <h3>Workout Log</h3>
-      <table>
+      {summary && <div className="text-center summary-msg"><strong>{summary}</strong></div>}
+      <h3 className="text-center">Workout Log</h3>
+      <table id="logTable">
         <thead>
           <tr>
             <th>#</th><th>Exercise</th><th>Weight</th><th>Reps</th>
@@ -190,10 +217,10 @@ function Logger() {
           ))}
         </tbody>
       </table>
-      {summary && <div><strong>{summary}</strong></div>}
     </div>
   );
 }
 
-// Render to a root element
-ReactDOM.render(<Logger />, document.getElementById('root'));
+// React 18+ API
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Logger />);
