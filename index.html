@@ -13,21 +13,22 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <!-- Tailwind CSS CDN (for development only) -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind-custom.css">
 </head>
-<body>
-  <header>
-    <h1>Short Stack</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="logger.html">Log Workout</a>
-      <a href="profile.html">Profile</a>
-      <a href="library.html">Exercises</a>
+<body class="bg-gray-50 flex flex-col items-center">
+  <header class="bg-gray-900 text-white p-4 text-center w-full">
+    <h1 class="text-3xl font-bold">Short Stack</h1>
+    <nav class="flex overflow-x-auto no-scrollbar gap-6 mt-2 flex-nowrap w-full justify-center">
+      <a href="index.html" class="hover:underline whitespace-nowrap">Home</a>
+      <a href="logger.html" class="hover:underline whitespace-nowrap">Log Workout</a>
+      <a href="profile.html" class="hover:underline whitespace-nowrap">Profile</a>
+      <a href="library.html" class="hover:underline whitespace-nowrap">Exercises</a>
     </nav>
   </header>
 
-  <main>
+  <main class="flex-1 flex flex-col items-center justify-center px-4 w-full">
     <!-- React root for index page -->
-    <div id="root"></div>
+    <div id="root" class="w-full max-w-xl"></div>
     <!--
     <div class="log-btn">
       <a href="logger.html">
@@ -37,7 +38,7 @@
     -->
   </main>
 
-  <footer>
+  <footer class="bg-gray-900 text-white text-center p-4 mt-8 w-full">
     <p>&copy; 2025 Short Stack. Built with reps, sets, and love. </p>
   </footer>
 
