@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="shortstack.css">
   <title>Reppy - Logger</title>
-  <script src="logger.js" defer></script>
+  <!-- React and ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel CDN for JSX support -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
   <header>
@@ -19,6 +22,10 @@
     </nav>
   </header>
 
+  <!-- React root -->
+  <div id="root"></div>
+
+  <!--
   <main>
     <form id="loggerForm">
       <div class="form-row">
@@ -99,11 +106,12 @@
           </tr>
         </thead>
         <tbody id="logBody">
-          <!-- New rows get added here -->
+           New rows get added here 
         </tbody>
       </table>
     </section>
   </main>
+  -->
 
   <footer>
     <nav>
@@ -114,5 +122,8 @@
     </nav>
     <p>&copy; 2025 Short Stack. Built with reps, sets, and love. </p>
   </footer>
+
+  <!-- React logger component, now using Babel for JSX -->
+  <script src="loggerReact.js" type="text/babel"></script>
 </body>
 </html>

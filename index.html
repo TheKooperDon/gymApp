@@ -6,7 +6,11 @@
   <title>Short Stack</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="shortstack.css">
-
+  <!-- React and ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel CDN for JSX support -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
   <header>
@@ -20,20 +24,23 @@
   </header>
 
   <main>
-    <!-- Workout Logging -->
+    <!-- React root for index page -->
+    <div id="root"></div>
+    <!--
     <div class="log-btn">
       <a href="logger.html">
         <button id="logBtn">Log Workout Reps</button>
-        </a>
-      </div>
-    
-   
-</main>
+      </a>
+    </div>
+    -->
+  </main>
 
   <footer>
     <p>&copy; 2025 Short Stack. Built with reps, sets, and love. </p>
   </footer>
 
-  <script src="app.js"></script>
+  <!-- React index component, using Babel for JSX -->
+  <script src="indexReact.js" type="text/babel"></script>
+  <!-- <script src="app.js"></script> -->
 </body>
 </html>
