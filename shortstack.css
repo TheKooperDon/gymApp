@@ -1,5 +1,5 @@
 /* ===================================================
-   shortstack.css â€” Global styling for Short Stack app
+   shortstack.css — Global styling for Short Stack app
    Applies to all pages unless noted otherwise
 =================================================== */
 
@@ -64,10 +64,67 @@ footer a {
   font-size: 0.9rem;
 }
 
+/* ===================== START OF INDEX ===================== */
+.intro-message {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 2rem 0 1.5rem 0;
+  font-weight: 500;
+}
 
-/* ===================================================
-   LOGGER.HTML SPECIFIC STYLING
-=================================================== */
+.next-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0 2rem 0;
+}
+
+.next-btn {
+  background: #2d6cdf;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75em 2em;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.next-btn:hover {
+  background: #1a417a;
+}
+/* ====================== END OF INDEX ====================== */
+
+/* ===================== START OF LOGGER ==================== */
+.logger-root {
+  width: 100%;
+}
+
+.logger-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.quick-pick-btn {
+  margin-top: 8px;
+}
+
+.quick-pad-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.summary-msg {
+  margin-top: 16px;
+  text-align: center;
+}
 
 /* ----- FORM ROWS: INPUT BLOCKS STACKED ----- */
 .form-row {
@@ -187,34 +244,4 @@ label {
 }
 
 */
-
-.logger-root {
-  width: 100%;
-}
-
-.logger-form {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.quick-pick-btn {
-  margin-top: 8px;
-}
-
-.quick-pad-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.summary-msg {
-  margin-top: 16px;
-  text-align: center;
-}
-
-
+/* ====================== END OF LOGGER ===================== */

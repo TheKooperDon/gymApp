@@ -172,9 +172,9 @@ function Logger() {
             <input type="number" id="weight" name="weight" value={weight} onChange={e => setWeight(e.target.value)} />
             <button type="button" onClick={() => setWeight(w => Number(w) + 5)}>+</button>
           </div>
-          <button type="button" onClick={() => setShowPad(p => !p)} style={{ marginTop: 8 }}>Quick Pick</button>
+          <button type="button" className="quick-pick-btn" onClick={() => setShowPad(p => !p)}>Quick Pick</button>
           {showPad && (
-            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+            <div className="quick-pad-row">
               {[5, 10, 15, 20, 25, 30, 35, 40].map(val => (
                 <button type="button" className="pad-btn" key={val} onClick={() => handlePad(val)}>{val}</button>
               ))}
