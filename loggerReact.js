@@ -141,20 +141,34 @@ function Logger() {
   }
 
   return (
-    <div className="logger-root">
-      <h2 className="text-center">Log Workout</h2>
-      <form onSubmit={addSet} className="logger-form">
-        <div className="form-row">
-          <label className="text-center">Select Muscle Group:</label>
-          <div className="button-wrap">
+    <div className="w-full">
+      <h2 className="text-center text-2xl font-semibold mb-4">Log Workout</h2>
+      <form onSubmit={addSet} className="w-full max-w-[400px] mx-auto">
+        <div className="flex flex-col items-center mb-4 w-full">
+          <label className="text-center mb-1">Select Muscle Group:</label>
+          <div className="flex flex-wrap justify-center gap-2 mb-4 w-full">
             {Object.keys(groupedExercises).map(group => (
-              <button type="button" key={group} onClick={() => setSelectedGroup(group)}>{group}</button>
+              <button
+                type="button"
+                key={group}
+                onClick={() => setSelectedGroup(group)}
+                className={`flex-1 min-w-[90px] px-3 py-2 rounded font-medium border border-gray-300 bg-gray-100 hover:bg-gray-200 transition ${selectedGroup === group ? 'bg-blue-200 border-blue-400' : ''}`}
+              >
+                {group}
+              </button>
             ))}
           </div>
         </div>
-        <div className="form-row">
-          <label htmlFor="exercise">Exercise:</label>
-          <select id="exercise" name="exercise" value={exercise} onChange={e => setExercise(e.target.value)} required>
+        <div className="flex flex-col items-center mb-4 w-full">
+          <label htmlFor="exercise" className="mb-1">Exercise:</label>
+          <select
+            id="exercise"
+            name="exercise"
+            value={exercise}
+            onChange={e => setExercise(e.target.value)}
+            required
+            className="w-full max-w-xs px-2 py-2 border border-gray-300 rounded text-center"
+          >
             <option value="">
               {selectedGroup
                 ? `-- Select ${selectedGroup} Exercise --`
@@ -165,54 +179,71 @@ function Logger() {
             ))}
           </select>
         </div>
-        <div className="form-row">
-          <label htmlFor="weight">Weight (lbs):</label>
-          <div className="input-group">
-            <button type="button" onClick={() => setWeight(w => Math.max(0, Number(w) - 5))}>-</button>
-            <input type="number" id="weight" name="weight" value={weight} onChange={e => setWeight(e.target.value)} />
-            <button type="button" onClick={() => setWeight(w => Number(w) + 5)}>+</button>
+        <div className="flex flex-col items-center mb-4 w-full">
+          <label htmlFor="weight" className="mb-1">Weight (lbs):</label>
+          <div className="flex justify-center items-center gap-2 w-full mb-2">
+            <button type="button" onClick={() => setWeight(w => Math.max(0, Number(w) - 5))} className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">-</button>
+            <input
+              type="number"
+              id="weight"
+              name="weight"
+              value={weight}
+              onChange={e => setWeight(e.target.value)}
+              className="flex-1 max-w-[100px] text-center text-lg p-2 border border-gray-300 rounded"
+            />
+            <button type="button" onClick={() => setWeight(w => Number(w) + 5)} className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">+</button>
           </div>
-          <button type="button" className="quick-pick-btn" onClick={() => setShowPad(p => !p)}>Quick Pick</button>
+          <button type="button" className="mt-2 text-sm text-blue-700 underline" onClick={() => setShowPad(p => !p)}>Quick Pick</button>
           {showPad && (
-            <div className="quick-pad-row">
+            <div className="flex gap-2 mt-2 flex-wrap justify-center">
               {[5, 10, 15, 20, 25, 30, 35, 40].map(val => (
-                <button type="button" className="pad-btn" key={val} onClick={() => handlePad(val)}>{val}</button>
+                <button type="button" className="px-4 py-2 text-base bg-gray-100 rounded cursor-pointer border border-gray-300" key={val} onClick={() => handlePad(val)}>{val}</button>
               ))}
-              <button type="button" className="pad-btn" onClick={() => handlePad("Clear")}>Clear</button>
+              <button type="button" className="px-4 py-2 text-base bg-gray-100 rounded cursor-pointer border border-gray-300" onClick={() => handlePad("Clear")}>Clear</button>
             </div>
           )}
         </div>
-        <div className="form-row">
-          <label htmlFor="reps">Reps:</label>
-          <div className="input-group">
-            <button type="button" onClick={() => setReps(r => Math.max(0, Number(r) - 1))}>-</button>
-            <input type="number" id="reps" name="reps" value={reps} onChange={e => setReps(e.target.value)} />
-            <button type="button" onClick={() => setReps(r => Number(r) + 1)}>+</button>
+        <div className="flex flex-col items-center mb-4 w-full">
+          <label htmlFor="reps" className="mb-1">Reps:</label>
+          <div className="flex justify-center items-center gap-2 w-full">
+            <button type="button" onClick={() => setReps(r => Math.max(0, Number(r) - 1))} className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">-</button>
+            <input
+              type="number"
+              id="reps"
+              name="reps"
+              value={reps}
+              onChange={e => setReps(e.target.value)}
+              className="flex-1 max-w-[100px] text-center text-lg p-2 border border-gray-300 rounded"
+            />
+            <button type="button" onClick={() => setReps(r => Number(r) + 1)} className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">+</button>
           </div>
         </div>
-        <div className="button-row">
-          <button type="submit">+ Add Set</button>
-          <button type="button" onClick={repeatSet}>Repeat Last Set</button>
+        <div className="flex justify-center gap-4 mb-4 w-full">
+          <button type="submit" className="flex-1 max-w-[150px] px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">+ Add Set</button>
+          <button type="button" onClick={repeatSet} className="flex-1 max-w-[150px] px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Repeat Last Set</button>
         </div>
-        <div className="form-row">
-          <button type="button" onClick={finishWorkout}>Finish Workout</button>
+        <div className="flex flex-col items-center mb-4 w-full">
+          <button type="button" onClick={finishWorkout} className="w-full max-w-xs px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Finish Workout</button>
         </div>
       </form>
-      {summary && <div className="text-center summary-msg"><strong>{summary}</strong></div>}
-      <h3 className="text-center">Workout Log</h3>
-      <table id="logTable">
+      {summary && <div className="mt-4 text-center font-semibold text-green-700"><strong>{summary}</strong></div>}
+      <h3 className="text-center text-lg font-semibold mt-6 mb-2">Workout Log</h3>
+      <table id="logTable" className="w-full border-collapse">
         <thead>
           <tr>
-            <th>#</th><th>Exercise</th><th>Weight</th><th>Reps</th>
+            <th className="border border-gray-300 p-2 text-center bg-gray-100">#</th>
+            <th className="border border-gray-300 p-2 text-center bg-gray-100">Exercise</th>
+            <th className="border border-gray-300 p-2 text-center bg-gray-100">Weight</th>
+            <th className="border border-gray-300 p-2 text-center bg-gray-100">Reps</th>
           </tr>
         </thead>
         <tbody>
           {log.map((set, idx) => (
             <tr key={idx}>
-              <td>{idx + 1}</td>
-              <td>{set.exercise}</td>
-              <td>{set.weight} lbs</td>
-              <td>{set.reps}</td>
+              <td className="border border-gray-300 p-2 text-center">{idx + 1}</td>
+              <td className="border border-gray-300 p-2 text-center">{set.exercise}</td>
+              <td className="border border-gray-300 p-2 text-center">{set.weight} lbs</td>
+              <td className="border border-gray-300 p-2 text-center">{set.reps}</td>
             </tr>
           ))}
         </tbody>

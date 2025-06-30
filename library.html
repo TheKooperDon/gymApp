@@ -6,42 +6,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Short Stack - Exercise Library</title>
-  <link rel="stylesheet" href="shortstack.css" />
 </head>
-<body>
-  <header>
-    <h1>Short Stack</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="logger.html">Log Workout</a>
-      <a href="profile.html">Profile</a>
-      <a href="library.html">Exercises</a>
-    </nav>
-  </header>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center text-[#222] font-sans">
+  <div class="w-full max-w-[430px] min-h-[90vh] bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col">
+    <header class="bg-gray-900 text-white p-4 text-center">
+      <h1 class="text-3xl font-bold">Short Stack</h1>
+      <nav class="flex justify-center gap-6 mt-2 flex-wrap">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="logger.html" class="hover:underline">Log Workout</a>
+        <a href="profile.html" class="hover:underline">Profile</a>
+        <a href="library.html" class="hover:underline">Exercises</a>
+      </nav>
+    </header>
 
-  <main>
-    <h2>Exercise Demo Library</h2>
-    <p>Here you'll find videos showing how to correctly perform each movement in Short Stack.</p>
+    <main class="flex-1 p-6 flex flex-col justify-center items-center text-center">
+      <h2 class="text-2xl font-semibold mb-4">Exercise Demo Library</h2>
+      <p class="mb-4">Here you'll find videos showing how to correctly perform each movement in Short Stack.</p>
+      <!-- 💡 IDEAS FOR THIS PAGE:
+        - Buttons or tabs to select muscle groups (like on logger page)
+        - Grid of video thumbnails per group
+        - Option to filter or search
+        - YouTube or locally embedded videos
+        - Maybe include a "featured tip of the day"?
+      -->
+      <p class="text-gray-500">Muscle group categories and demo content coming soon.</p>
+    </main>
 
-    <!-- 💡 IDEAS FOR THIS PAGE:
-      - Buttons or tabs to select muscle groups (like on logger page)
-      - Grid of video thumbnails per group
-      - Option to filter or search
-      - YouTube or locally embedded videos
-      - Maybe include a "featured tip of the day"?
-    -->
-
-    <p>Muscle group categories and demo content coming soon.</p>
-  </main>
-
-  <footer>
-    <nav>
-      <a href="about.html">About</a>
-      <a href="settings.html">Settings</a>
-      <a href="export.html">Export</a>
-      <a href="login.html">Login</a>
-    </nav>
-    <p>&copy; 2025 Short Stack. Built with reps, sets, and love. </p>
-  </footer>
+    <footer class="bg-gray-900 text-white text-center p-4">
+      <nav class="flex justify-center gap-4 mb-2 flex-wrap">
+        <a href="about.html" class="hover:underline">About</a>
+        <a href="settings.html" class="hover:underline">Settings</a>
+        <a href="export.html" class="hover:underline">Export</a>
+        <a href="login.html" class="hover:underline">Login</a>
+      </nav>
+      <p>&copy; 2025 Short Stack. Built with reps, sets, and love. </p>
+    </footer>
+  </div>
 </body>
 </html>

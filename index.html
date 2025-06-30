@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Short Stack</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="shortstack.css">
+
   <!-- React and ReactDOM CDN -->
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -13,36 +12,32 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <!-- Tailwind CSS CDN (for development only) -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind-custom.css" />
 </head>
-<body>
-  <header>
-    <h1>Short Stack</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="logger.html">Log Workout</a>
-      <a href="profile.html">Profile</a>
-      <a href="library.html">Exercises</a>
-    </nav>
-  </header>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center text-[#222] font-sans">
+  <div class="w-full max-w-[430px] min-h-[90vh] bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col">
+    <header class="bg-gray-900 text-white p-4 text-center">
+      <h1 class="text-3xl font-bold">Short Stack</h1>
+      <nav class="flex justify-center gap-6 mt-2 flex-wrap">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="logger.html" class="hover:underline">Log Workout</a>
+        <a href="profile.html" class="hover:underline">Profile</a>
+        <a href="library.html" class="hover:underline">Exercises</a>
+      </nav>
+    </header>
 
-  <main>
-    <!-- React root for index page -->
-    <div id="root"></div>
-    <!--
-    <div class="log-btn">
-      <a href="logger.html">
-        <button id="logBtn">Log Workout Reps</button>
-      </a>
-    </div>
-    -->
-  </main>
+    <main class="flex-1 p-6 flex flex-col justify-center">
+      <div id="root" class="w-full">
+        <!-- Injected content goes here -->
+      </div>
+    </main>
 
-  <footer>
-    <p>&copy; 2025 Short Stack. Built with reps, sets, and love. </p>
-  </footer>
+    <footer class="bg-gray-900 text-white text-center p-4">
+      <p>&copy; 2025 Short Stack. Built with reps, sets, and love.</p>
+    </footer>
+  </div>
 
   <!-- React index component, using Babel for JSX -->
   <script src="indexReact.js" type="text/babel"></script>
-  <!-- <script src="app.js"></script> -->
 </body>
 </html>
