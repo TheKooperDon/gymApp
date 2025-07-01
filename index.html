@@ -26,10 +26,50 @@
       </nav>
     </header>
 
-    <main class="flex-1 p-6 flex flex-col justify-center">
-      <div id="root" class="w-full">
-        <!-- Injected content goes here -->
-      </div>
+    <main class="flex-1 p-6 flex flex-col gap-8 justify-center items-center text-center">
+      <!-- 1. Intro Message / Tagline -->
+      <section class="mb-2">
+        <h2 class="text-2xl font-semibold mb-2">Welcome to Short Stack</h2>
+        <p class="text-lg text-gray-700">Your pocket gym log with max gains, no fluff.</p>
+      </section>
+
+      <!-- 2. Call to Action Buttons -->
+      <section class="flex flex-col gap-3 w-full max-w-xs mb-2">
+        <a href="logger.html" class="w-full">
+          <button class="w-full bg-blue-600 text-white py-2 rounded-lg text-lg font-semibold shadow hover:bg-blue-700 transition">Get Started</button>
+        </a>
+        <a href="auth.html" class="w-full">
+          <button class="w-full bg-gray-200 text-blue-700 py-2 rounded-lg text-lg font-semibold shadow hover:bg-blue-300 transition">Sign Up / Log In</button>
+        </a>
+      </section>
+
+      <!-- 3. App Preview Section -->
+      <section class="bg-gray-50 rounded-lg p-4 shadow-inner w-full max-w-xs flex flex-col items-center mb-2">
+        <h3 class="text-lg font-semibold mb-1">App Preview</h3>
+        <p class="mb-2 text-gray-700">Track sets, reps, and weights with ease.</p>
+        <!-- Embedded video placeholder -->
+        <video controls autoplay loop muted playsinline class="w-full h-40 rounded mb-2 object-cover bg-gray-200">
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <span class="text-xs text-gray-400 mb-2">(This will be replaced with a real app demo montage soon!)</span>
+        <ul class="text-left text-sm text-gray-600 list-disc list-inside">
+          <li>Quick Pick for weights</li>
+          <li>Set history</li>
+          <li>Profile tracking</li>
+        </ul>
+      </section>
+
+      <!-- 4. Why Use This? -->
+      <section class="w-full max-w-xs">
+        <h3 class="text-lg font-semibold mb-1">Log. Repeat. Grow.</h3>
+        <ul class="text-left text-gray-700 list-disc list-inside mb-2">
+          <li>Fast workout logging</li>
+          <li>Auto-saves your history</li>
+          <li>See volume stats and progress</li>
+          <li>No account? No problem. <span class="text-xs">(Yet 😏)</span></li>
+        </ul>
+      </section>
     </main>
 
     <footer class="bg-gray-900 text-white text-center p-4">
