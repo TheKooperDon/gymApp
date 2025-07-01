@@ -18,56 +18,54 @@ Optional: add contact info or version number
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Short Stack - About</title>
-  <link rel="stylesheet" href="shortstack.css" />
 </head>
-<body>
-  <header>
-    <h1>Short Stack</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="logger.html">Log Workout</a>
-      <a href="profile.html">Profile</a>
-      <a href="library.html">Exercises</a>
-    </nav>
-  </header>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center text-[#222] font-sans">
+  <div class="w-full max-w-[430px] min-h-[90vh] bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col">
+    <header class="bg-gray-900 text-white p-4 text-center">
+      <h1 class="text-3xl font-bold">Short Stack</h1>
+      <nav class="flex justify-center gap-6 mt-2 flex-wrap">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="logger.html" class="hover:underline">Log Workout</a>
+        <a href="profile.html" class="hover:underline">Profile</a>
+        <a href="library.html" class="hover:underline">Exercises</a>
+      </nav>
+    </header>
 
-  <main>
-    <h2>About Short Stack</h2>
-    <p>Short Stack is a workout tracker app made for real lifters who want clean, fast logging without fluff or subscriptions.</p>
+    <main class="flex-1 p-6 flex flex-col justify-center items-center text-center">
+      <h2 class="text-2xl font-semibold mb-4">About Short Stack</h2>
+      <p class="mb-4">Short Stack is a workout tracker app made for real lifters who want clean, fast logging without fluff or subscriptions.</p>
+      <!-- 🧠 IDEAS TO ADD HERE:
+        - A short mission statement
+        - Why it's built for short kings / everyone
+        - Your story (authentic gym + tech journey)
+        - Credits (like video creator, tech stack used)
+        - Version number and what's coming next
+        - Maybe an inspirational quote 💪
+      -->
+      <section class="mb-4">
+        <h3 class="text-lg font-semibold mb-2">What Makes Short Stack Different?</h3>
+        <ul class="list-disc list-inside text-left max-w-xs mx-auto mb-2">
+          <li>No monthly fees. Ever.</li>
+          <li>Built for quick logging, not distraction.</li>
+          <li>Accessible and modifiable for different body types.</li>
+          <li>Created by a lifter who lives it — not a big tech team.</li>
+        </ul>
+      </section>
+      <section>
+        <h3 class="text-lg font-semibold mb-2">More Info</h3>
+        <p>Version 1.0 Alpha - All feedback welcome 💌</p>
+      </section>
+    </main>
 
-    <!-- 🧠 IDEAS TO ADD HERE:
-      - A short mission statement
-      - Why it's built for short kings / everyone
-      - Your story (authentic gym + tech journey)
-      - Credits (like video creator, tech stack used)
-      - Version number and what's coming next
-      - Maybe an inspirational quote 💪
-    -->
-
-    <section>
-      <h3>What Makes Short Stack Different?</h3>
-      <ul>
-        <li>No monthly fees. Ever.</li>
-        <li>Built for quick logging, not distraction.</li>
-        <li>Accessible and modifiable for different body types.</li>
-        <li>Created by a lifter who lives it — not a big tech team.</li>
-      </ul>
-    </section>
-
-    <section>
-      <h3>More Info</h3>
-      <p>Version 1.0 Alpha - All feedback welcome 💌</p>
-    </section>
-  </main>
-
-  <footer>
-    <nav>
-      <a href="about.html">About</a>
-      <a href="settings.html">Settings</a>
-      <a href="export.html">Export</a>
-      <a href="login.html">Login</a>
-    </nav>
-    <p>&copy; 2025 Short Stack. Built with reps, sets, and love.</p>
-  </footer>
+    <footer class="bg-gray-900 text-white text-center p-4">
+      <nav class="flex justify-center gap-4 mb-2 flex-wrap">
+        <a href="about.html" class="hover:underline">About</a>
+        <a href="settings.html" class="hover:underline">Settings</a>
+        <a href="export.html" class="hover:underline">Export</a>
+        <a href="login.html" class="hover:underline">Login</a>
+      </nav>
+      <p>&copy; 2025 Short Stack. Built with reps, sets, and love.</p>
+    </footer>
+  </div>
 </body>
 </html>
