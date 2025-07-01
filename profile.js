@@ -44,4 +44,4 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-//test 
+//code for local storage. 
