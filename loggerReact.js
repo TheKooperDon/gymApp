@@ -248,6 +248,27 @@ function Logger() {
           ))}
         </tbody>
       </table>
+      {/* Add clear buttons below the log */}
+      <div className="flex justify-center gap-4 mt-6 mb-2">
+        <button
+          type="button"
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          onClick={() => {
+            if (log.length > 0) setLog(log.slice(0, -1));
+          }}
+        >
+          Remove Last Set
+        </button>
+        <button
+          type="button"
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          onClick={() => {
+            if (log.length > 0 && window.confirm('Clear all sets?')) setLog([]);
+          }}
+        >
+          Clear All
+        </button>
+      </div>
     </div>
   );
 }

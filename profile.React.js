@@ -5,8 +5,16 @@ const { useState, useEffect } = React;
 
 function Profile() {
   const [workouts, setWorkouts] = useState([]);
+  const [firstName, setFirstName] = useState("");
 
   useEffect(() => {
+    // Get logged-in user
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("currentUser"));
+    } catch (e) {}
+    setFirstName(user && user.firstName ? user.firstName : "");
+
     const keys = Object.keys(localStorage).filter(key => key.startsWith("workout_"));
     keys.sort().reverse();
     const data = keys.map(key => {
@@ -19,7 +27,14 @@ function Profile() {
 
   return (
     <div>
-      <h2>Your Profile & Stats</h2>
+      {firstName ? (
+        <>
+          <h2 className="mb-1">{firstName}'s Stats</h2>
+          <div className="mb-2 text-green-700 font-semibold">Welcome back, {firstName}!</div>
+        </>
+      ) : (
+        <h2>Your Profile & Stats</h2>
+      )}
       <h3>Workout History</h3>
       {workouts.length === 0 ? (
         <p>No workouts logged yet, go hit the gym 😤</p>
@@ -47,6 +62,26 @@ function Profile() {
           );
         })
       )}
+      {/* Clear All Data Button */}
+      <div className="flex justify-center mt-6">
+        <button
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          onClick={() => {
+            if (window.confirm('Are you sure you want to clear all workout data and log out?')) {
+              // Remove all workout logs
+              Object.keys(localStorage)
+                .filter(key => key.startsWith('workout_'))
+                .forEach(key => localStorage.removeItem(key));
+              // Remove login
+              localStorage.removeItem('currentUser');
+              setWorkouts([]);
+              setFirstName("");
+            }
+          }}
+        >
+          Clear All Data & Log Out
+        </button>
+      </div>
     </div>
   );
 }
