@@ -20,7 +20,11 @@ Most logged exercise
   <!-- Tailwind CSS CDN (for development only) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="tailwind-custom.css" />
-  <script src="profile.js" defer></script>
+  <!-- React and ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel CDN for JSX support -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center text-[#222] font-sans">
   <div class="w-full max-w-[430px] min-h-[90vh] bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col">
@@ -35,11 +39,7 @@ Most logged exercise
     </header>
 
     <main class="flex-1 p-6 flex flex-col justify-center">
-      <h2 class="text-2xl font-semibold mb-4 text-center">Your Profile & Stats</h2>
-      <section id="workoutHistory" class="mb-4">
-        <h3 class="text-lg font-medium mb-2 text-center">Workout History</h3>
-        <div id="workoutList"></div>
-      </section>
+      <div id="root" class="w-full"></div>
     </main>
 
     <footer class="bg-gray-900 text-white text-center p-4">
@@ -53,6 +53,7 @@ Most logged exercise
     </footer>
   </div>
 
-
+  <!-- React profile component, now using Babel for JSX -->
+  <script src="profile.React.js" type="text/babel"></script>
 </body>
 </html>
