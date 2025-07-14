@@ -1,6 +1,15 @@
 // loggerReact.js
+// ===========================
+// React Logger Component for Short Stack
+// ===========================
+// This file contains the main workout logger UI and logic using React.
+// It handles exercise selection, set logging, local state, and localStorage saving.
+
 const { useState } = React;
 
+// ===========================
+// 🧠 Exercise Map: All Exercises Grouped by Category
+// ===========================
 const exerciseMap = {
   "Cable Fly": "Chest",
   "Cable Incline Chest Press": "Chest",
@@ -68,6 +77,7 @@ const exerciseMap = {
   "Plank": "Core",
 };
 
+// Helper to group exercises by muscle group
 function groupExercisesByCategory(map) {
   const grouped = {};
   for (let exercise in map) {
@@ -78,17 +88,22 @@ function groupExercisesByCategory(map) {
   return grouped;
 }
 
+// ===========================
+// 💪 Logger Component
+// ===========================
 function Logger() {
+  // State hooks for UI and form
   const groupedExercises = groupExercisesByCategory(exerciseMap);
-  const [selectedGroup, setSelectedGroup] = useState("");
-  const [exercise, setExercise] = useState("");
-  const [weight, setWeight] = useState("");
-  const [reps, setReps] = useState("");
-  const [log, setLog] = useState([]);
-  const [lastSet, setLastSet] = useState(null);
-  const [summary, setSummary] = useState("");
-  const [showPad, setShowPad] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(""); // Muscle group selected
+  const [exercise, setExercise] = useState(""); // Exercise selected
+  const [weight, setWeight] = useState(""); // Weight input
+  const [reps, setReps] = useState(""); // Reps input
+  const [log, setLog] = useState([]); // List of sets for this session
+  const [lastSet, setLastSet] = useState(null); // Last set added (for repeat)
+  const [summary, setSummary] = useState(""); // Workout summary after saving
+  const [showPad, setShowPad] = useState(false); // Show/hide quick weight pad
 
+  // Add a set to the log
   function addSet(e) {
     e.preventDefault();
     if (!exercise || !weight || !reps) return;
@@ -100,17 +115,19 @@ function Logger() {
     setReps("");
   }
 
+  // Repeat the last set
   function repeatSet() {
     if (!lastSet) return;
     setLog([...log, lastSet]);
   }
 
+  // Finish workout: group sets, calculate stats, save to localStorage
   function finishWorkout() {
     if (log.length === 0) {
       alert("Bruh... log at least one set.");
       return;
     }
-    // Group sets
+    // Group sets by unique (exercise, weight, reps)
     const grouped = {};
     let totalSets = 0, totalReps = 0, totalVolume = 0;
     log.forEach(({ exercise, weight, reps }) => {
@@ -121,6 +138,7 @@ function Logger() {
         grouped[key].sets++;
       }
     });
+    // Calculate totals
     for (const entry of Object.values(grouped)) {
       totalSets += entry.sets;
       totalReps += entry.reps * entry.sets;
@@ -128,22 +146,29 @@ function Logger() {
     }
     const today = new Date().toLocaleDateString();
     setSummary(`Workout saved for ${today} — ${totalSets} sets, ${totalReps} reps, ${totalVolume} lbs lifted.`);
-    // Save to localStorage
+    // Save to localStorage by date
     const dateKey = new Date().toISOString().slice(0, 10);
     localStorage.setItem(`workout_${dateKey}`, JSON.stringify(grouped));
     alert("Workout saved! 💾 Time to go flex 💪");
   }
 
+  // Handle quick weight pad selection
   function handlePad(val) {
     if (val === "Clear") setWeight("");
     else setWeight(val);
     setShowPad(false);
   }
 
+  // ===========================
+  // 🖼️ Render Logger UI
+  // ===========================
   return (
     <div className="w-full">
+      {/* Page Title */}
       <h2 className="text-center text-2xl font-semibold mb-4">Log Workout</h2>
+      {/* Workout Form */}
       <form onSubmit={addSet} className="w-full max-w-[400px] mx-auto">
+        {/* Muscle Group Selection */}
         <div className="flex flex-col items-center mb-4 w-full">
           <label className="text-center mb-1">Select Muscle Group:</label>
           <div className="flex flex-wrap justify-center gap-2 mb-4 w-full">
@@ -159,6 +184,7 @@ function Logger() {
             ))}
           </div>
         </div>
+        {/* Exercise Dropdown */}
         <div className="flex flex-col items-center mb-4 w-full">
           <label htmlFor="exercise" className="mb-1">Exercise:</label>
           <select
@@ -179,10 +205,13 @@ function Logger() {
             ))}
           </select>
         </div>
+        {/* Weight Input & Quick Pad */}
         <div className="flex flex-col items-center mb-4 w-full">
           <label htmlFor="weight" className="mb-1">Weight (lbs):</label>
           <div className="flex justify-center items-center gap-2 w-full mb-2">
+            {/* Decrease weight */}
             <button type="button" onClick={() => setWeight(w => Math.max(0, Number(w) - 5))} className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">-</button>
+            {/* Weight input */}
             <input
               type="number"
               id="weight"
@@ -191,9 +220,12 @@ function Logger() {
               onChange={e => setWeight(e.target.value)}
               className="flex-1 max-w-[100px] text-center text-lg p-2 border border-gray-300 rounded"
             />
+            {/* Increase weight */}
             <button type="button" onClick={() => setWeight(w => Number(w) + 5)} className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">+</button>
           </div>
-          <button type="button" className="mt-2 text-sm text-blue-700 underline" onClick={() => setShowPad(p => !p)}>Quick Pick</button>
+          {/* Quick Pick Pad Toggle */}
+          <button type="button" className="flex-0 max-w-[150px] px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onClick={() => setShowPad(p => !p)}>Quick Pick</button>
+          {/* Quick Pick Pad */}
           {showPad && (
             <div className="flex gap-2 mt-2 flex-wrap justify-center">
               {[5, 10, 15, 20, 25, 30, 35, 40].map(val => (
@@ -203,10 +235,13 @@ function Logger() {
             </div>
           )}
         </div>
+        {/* Reps Input */}
         <div className="flex flex-col items-center mb-4 w-full">
           <label htmlFor="reps" className="mb-1">Reps:</label>
           <div className="flex justify-center items-center gap-2 w-full">
+            {/* Decrease reps */}
             <button type="button" onClick={() => setReps(r => Math.max(0, Number(r) - 1))} className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">-</button>
+            {/* Reps input */}
             <input
               type="number"
               id="reps"
@@ -215,18 +250,25 @@ function Logger() {
               onChange={e => setReps(e.target.value)}
               className="flex-1 max-w-[100px] text-center text-lg p-2 border border-gray-300 rounded"
             />
+            {/* Increase reps */}
             <button type="button" onClick={() => setReps(r => Number(r) + 1)} className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">+</button>
           </div>
         </div>
+        {/* Add/Repeat/Finish Buttons */}
         <div className="flex justify-center gap-4 mb-4 w-full">
+          {/* Add Set */}
           <button type="submit" className="flex-1 max-w-[150px] px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">+ Add Set</button>
+          {/* Repeat Last Set */}
           <button type="button" onClick={repeatSet} className="flex-1 max-w-[150px] px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Repeat Last Set</button>
         </div>
+        {/* Finish Workout Button */}
         <div className="flex flex-col items-center mb-4 w-full">
           <button type="button" onClick={finishWorkout} className="w-full max-w-xs px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Finish Workout</button>
         </div>
       </form>
+      {/* Workout Summary (after saving) */}
       {summary && <div className="mt-4 text-center font-semibold text-green-700"><strong>{summary}</strong></div>}
+      {/* Workout Log Table */}
       <h3 className="text-center text-lg font-semibold mt-6 mb-2">Workout Log</h3>
       <table id="logTable" className="w-full border-collapse">
         <thead>
@@ -238,6 +280,7 @@ function Logger() {
           </tr>
         </thead>
         <tbody>
+          {/* Render each set in the log */}
           {log.map((set, idx) => (
             <tr key={idx}>
               <td className="border border-gray-300 p-2 text-center">{idx + 1}</td>
@@ -248,8 +291,9 @@ function Logger() {
           ))}
         </tbody>
       </table>
-      {/* Add clear buttons below the log */}
+      {/* Log Clear/Remove Buttons */}
       <div className="flex justify-center gap-4 mt-6 mb-2">
+        {/* Remove Last Set */}
         <button
           type="button"
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
@@ -259,6 +303,7 @@ function Logger() {
         >
           Remove Last Set
         </button>
+        {/* Clear All Sets */}
         <button
           type="button"
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -273,6 +318,8 @@ function Logger() {
   );
 }
 
-// React 18+ API
+// ===========================
+// Mount Logger to #root
+// ===========================
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Logger />);
