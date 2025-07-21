@@ -6,6 +6,8 @@ const { useState, useEffect } = React;
 function Profile() {
   const [workouts, setWorkouts] = useState([]);
   const [firstName, setFirstName] = useState("");
+  const [editingWorkout, setEditingWorkout] = useState(null); // {date, workoutData}
+  const [editData, setEditData] = useState(null); // editable copy
 
   useEffect(() => {
     // Get logged-in user
@@ -97,6 +99,102 @@ function Profile() {
     "Plank": "Core",
   };
 
+  // Modal logic
+  function openEditModal(date, workoutData) {
+    setEditingWorkout({ date, workoutData });
+    setEditData(JSON.parse(JSON.stringify(workoutData)));
+  }
+  function closeEditModal() {
+    setEditingWorkout(null);
+    setEditData(null);
+  }
+  function handleEditChange(idx, field, value) {
+    setEditData(prev => {
+      const keys = Object.keys(prev);
+      const key = keys[idx];
+      return {
+        ...prev,
+        [key]: {
+          ...prev[key],
+          [field]: value
+        }
+      };
+    });
+  }
+  function handleRemoveSet(idx) {
+    setEditData(prev => {
+      const keys = Object.keys(prev);
+      const key = keys[idx];
+      const newData = { ...prev };
+      delete newData[key];
+      return newData;
+    });
+  }
+  function handleAddSet() {
+    setEditData(prev => {
+      const newKey = `set${Date.now()}`;
+      return {
+        ...prev,
+        [newKey]: { exercise: "", sets: 1, reps: 1, weight: 0 }
+      };
+    });
+  }
+  function handleEditSave() {
+    // Save to localStorage
+    localStorage.setItem(
+      `workout_${editingWorkout.date}`,
+      JSON.stringify(editData)
+    );
+    // Update state
+    setWorkouts(ws =>
+      ws.map(w =>
+        w.date === editingWorkout.date
+          ? { ...w, workoutData: editData }
+          : w
+      )
+    );
+    closeEditModal();
+  }
+
+  // For dropdowns
+  const muscleGroups = Array.from(new Set(Object.values(exerciseMap)));
+  function getExercisesForGroup(group) {
+    return Object.entries(exerciseMap)
+      .filter(([_, g]) => g === group)
+      .map(([ex]) => ex);
+  }
+  function getGroupForExercise(exercise) {
+    return exerciseMap[exercise] || "";
+  }
+  function handleEditGroupChange(idx, group) {
+    setEditData(prev => {
+      const keys = Object.keys(prev);
+      const key = keys[idx];
+      // Reset exercise if group changes
+      return {
+        ...prev,
+        [key]: {
+          ...prev[key],
+          group,
+          exercise: ""
+        }
+      };
+    });
+  }
+  function handleEditExerciseChange(idx, exercise) {
+    setEditData(prev => {
+      const keys = Object.keys(prev);
+      const key = keys[idx];
+      return {
+        ...prev,
+        [key]: {
+          ...prev[key],
+          exercise
+        }
+      };
+    });
+  }
+
   return (
     <div>
       {firstName ? (
@@ -159,8 +257,17 @@ function Profile() {
               return (
                 <div
                   key={idx}
-                  className="bg-white border border-gray-200 shadow-md rounded-xl mb-6 p-4 transition hover:shadow-lg"
+                  className="bg-white border border-gray-200 shadow-md rounded-xl mb-6 p-4 transition hover:shadow-lg relative"
                 >
+                  <button
+                    className="absolute top-2 right-2 text-gray-400 hover:text-blue-600"
+                    title="Edit workout"
+                    onClick={() => openEditModal(date, workoutData)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487a2.1 2.1 0 1 1 2.97 2.97L7.5 19.789l-4 1 1-4 13.362-13.302z" />
+                    </svg>
+                  </button>
                   <h4 className="text-lg font-semibold text-blue-700 mb-2">Workout for {date}</h4>
                   <ul className="mb-2 space-y-1">
                     {Object.values(workoutData).map((entry, i) => {
@@ -183,23 +290,126 @@ function Profile() {
               );
             })
           )}
-          {/* Clear All Data Button */}
-          <div className="flex justify-center mt-6">
-            <button
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              onClick={() => {
-                if (window.confirm('Are you sure you want to clear all workout data?')) {
-                  // Remove all workout logs
-                  Object.keys(localStorage)
-                    .filter(key => key.startsWith('workout_'))
-                    .forEach(key => localStorage.removeItem(key));
-                  setWorkouts([]);
-                }
-              }}
-            >
-              Clear All Data
-            </button>
-          </div>
+
+          {/* Edit Modal */}
+          {editingWorkout && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md relative">
+                <button
+                  className="absolute top-2 right-2 text-gray-400 hover:text-red-600"
+                  onClick={closeEditModal}
+                  title="Close"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                <h3 className="text-xl font-bold mb-4">Edit Workout for {editingWorkout.date}</h3>
+                <form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    handleEditSave();
+                  }}
+                  className="space-y-4"
+                >
+                  {Object.entries(editData).map(([key, entry], i) => (
+                    <div key={key} className="border-b pb-2 mb-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-semibold">Exercise {i + 1}</span>
+                        <button
+                          type="button"
+                          className="text-xs text-red-500 hover:underline"
+                          onClick={() => handleRemoveSet(i)}
+                        >Remove</button>
+                      </div>
+                      {/* Muscle group dropdown */}
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Body Type</label>
+                      <select
+                        className="w-full border rounded px-2 py-1 mb-1"
+                        value={entry.group || getGroupForExercise(entry.exercise) || ""}
+                        onChange={e => handleEditGroupChange(i, e.target.value)}
+                        required
+                      >
+                        <option value="">Select body type</option>
+                        {muscleGroups.map(g => (
+                          <option key={g} value={g}>{g}</option>
+                        ))}
+                      </select>
+                      {/* Exercise dropdown */}
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Exercise Name</label>
+                      <select
+                        className="w-full border rounded px-2 py-1 mb-1"
+                        value={entry.exercise}
+                        onChange={e => handleEditExerciseChange(i, e.target.value)}
+                        required
+                        disabled={!entry.group && !getGroupForExercise(entry.exercise)}
+                      >
+                        <option value="">Select exercise</option>
+                        {(entry.group || getGroupForExercise(entry.exercise)) &&
+                          getExercisesForGroup(entry.group || getGroupForExercise(entry.exercise)).map(ex => (
+                            <option key={ex} value={ex}>{ex}</option>
+                          ))}
+                      </select>
+                      <div className="flex gap-2 mt-2">
+                        <div className="flex-1">
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Sets</label>
+                          <input
+                            type="number"
+                            className="w-full border rounded px-2 py-1"
+                            value={entry.sets}
+                            min={1}
+                            onChange={e => handleEditChange(i, "sets", Number(e.target.value))}
+                            placeholder="Sets"
+                            required
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Reps</label>
+                          <input
+                            type="number"
+                            className="w-full border rounded px-2 py-1"
+                            value={entry.reps}
+                            min={1}
+                            onChange={e => handleEditChange(i, "reps", Number(e.target.value))}
+                            placeholder="Reps"
+                            required
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Weight (lbs)</label>
+                          <input
+                            type="number"
+                            className="w-full border rounded px-2 py-1"
+                            value={entry.weight}
+                            min={0}
+                            onChange={e => handleEditChange(i, "weight", Number(e.target.value))}
+                            placeholder="Weight"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="w-full bg-gray-200 text-blue-700 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-300 transition mb-2"
+                    onClick={handleAddSet}
+                  >Add Exercise</button>
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+                    >Save</button>
+                    <button
+                      type="button"
+                      className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition"
+                      onClick={closeEditModal}
+                    >Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </>
       ) : (
         <div className="text-center mt-8">

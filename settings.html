@@ -36,6 +36,10 @@
       </ul>
       <p class="text-gray-500">These features will be added soon as development continues!</p>
       <button id="logoutBtn" class="mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Log Out</button>
+      <div class="mt-4 flex flex-col items-center">
+        <span class="text-xs text-gray-500 mb-1">Danger zone: This will delete all your workout logs.</span>
+        <button id="clearDataBtn" class="px-3 py-1 bg-gray-200 text-red-700 rounded hover:bg-red-300 text-sm border border-red-300">Clear All Workout Data</button>
+      </div>
     </main>
 
     <footer class="bg-gray-900 text-white text-center p-4">
@@ -55,6 +59,17 @@
         btn.addEventListener('click', function() {
           localStorage.removeItem('currentUser');
           window.location.href = 'login.html';
+        });
+      }
+      var clearBtn = document.getElementById('clearDataBtn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          if (window.confirm('Are you sure you want to clear all workout data? This cannot be undone.')) {
+            Object.keys(localStorage)
+              .filter(function(key) { return key.startsWith('workout_'); })
+              .forEach(function(key) { localStorage.removeItem(key); });
+            alert('All workout data cleared.');
+          }
         });
       }
     });
