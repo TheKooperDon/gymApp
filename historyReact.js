@@ -21,7 +21,19 @@ function WorkoutHistory() {
       const data = keys.map(key => {
         const date = key.replace("workout_", "");
         const workoutData = JSON.parse(localStorage.getItem(key));
-        return { date, workoutData };
+        
+        // Convert old date format (YYYY-MM-DD) to new format (MM/DD/YYYY)
+        let newDate = date;
+        if (date.includes('-')) {
+          const [year, month, day] = date.split('-');
+          newDate = `${month}/${day}/${year}`;
+          
+          // Update localStorage with new key
+          localStorage.removeItem(key);
+          localStorage.setItem(`workout_${newDate}`, JSON.stringify(workoutData));
+        }
+        
+        return { date: newDate, workoutData };
       });
       setWorkouts(data);
     } else {
@@ -216,6 +228,19 @@ function WorkoutHistory() {
     <main className="flex-1 p-6 flex flex-col">
       {firstName ? (
         <>
+          {/* Back Button */}
+          <div className="flex justify-start mb-4">
+            <a 
+              href="profile.html" 
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              title="Back to Profile"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </a>
+          </div>
+
           <div className="mb-4 flex flex-col items-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete Workout History</h2>
             <p className="text-gray-600 mb-4">All your logged workouts</p>

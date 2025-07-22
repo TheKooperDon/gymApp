@@ -10,6 +10,8 @@ function Profile() {
   const [editData, setEditData] = useState(null); // editable copy
   const [addingWorkout, setAddingWorkout] = useState(false);
   const [addData, setAddData] = useState({ date: '', exercises: { set0: { group: '', exercise: '', sets: 1, reps: 1, weight: 0 } } });
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentWeek, setCurrentWeek] = useState(new Date());
 
   useEffect(() => {
     // Get logged-in user
@@ -25,13 +27,154 @@ function Profile() {
       const data = keys.map(key => {
         const date = key.replace("workout_", "");
         const workoutData = JSON.parse(localStorage.getItem(key));
-        return { date, workoutData };
+        
+        // Convert old date format (YYYY-MM-DD) to new format (MM/DD/YYYY)
+        let newDate = date;
+        if (date.includes('-')) {
+          const [year, month, day] = date.split('-');
+          newDate = `${month}/${day}/${year}`;
+          
+          // Update localStorage with new key
+          localStorage.removeItem(key);
+          localStorage.setItem(`workout_${newDate}`, JSON.stringify(workoutData));
+        }
+        
+        return { date: newDate, workoutData };
       });
       setWorkouts(data);
     } else {
       setWorkouts([]);
     }
   }, []);
+
+  // Generate calendar data for the current month
+  function generateCalendarData() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startDayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    
+    const calendar = [];
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startDayOfWeek; i++) {
+      calendar.push({ day: '', hasWorkout: false, isEmpty: true });
+    }
+    
+    // Add all days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${String(month + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}/${year}`;
+      const hasWorkout = workouts.some(w => w.date === dateStr);
+      calendar.push({
+        day,
+        hasWorkout,
+        date: dateStr,
+        isEmpty: false
+      });
+    }
+    
+    return calendar;
+  }
+
+  function navigateMonth(direction) {
+    setCurrentMonth(prev => {
+      const newMonth = new Date(prev);
+      if (direction === 'prev') {
+        newMonth.setMonth(newMonth.getMonth() - 1);
+      } else {
+        newMonth.setMonth(newMonth.getMonth() + 1);
+      }
+      return newMonth;
+    });
+  }
+
+  function getMonthName(date) {
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+
+  // Generate weight lifted data for the current week (Monday to Sunday)
+  function generateWeightData() {
+    const weightData = [];
+    
+    // Get Monday of current week
+    const monday = new Date(currentWeek);
+    const dayOfWeek = monday.getDay();
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Sunday = 0, so Monday = 1
+    monday.setDate(monday.getDate() - daysToMonday);
+    
+    // Generate data for each day of the week (Monday to Sunday)
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
+      const dateStr = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;
+      const workout = workouts.find(w => w.date === dateStr);
+      
+      let totalWeight = 0;
+      if (workout) {
+        Object.values(workout.workoutData).forEach(entry => {
+          totalWeight += entry.weight * entry.reps * entry.sets;
+        });
+      }
+      
+      weightData.push({
+        date: dateStr,
+        weight: totalWeight,
+        day: date.toLocaleDateString('en-US', { weekday: 'short' })
+      });
+    }
+    
+    return weightData;
+  }
+
+  function navigateWeek(direction) {
+    setCurrentWeek(prev => {
+      const newWeek = new Date(prev);
+      if (direction === 'prev') {
+        newWeek.setDate(newWeek.getDate() - 7);
+      } else {
+        newWeek.setDate(newWeek.getDate() + 7);
+      }
+      return newWeek;
+    });
+  }
+
+  function getWeekRange(date) {
+    const monday = new Date(date);
+    const dayOfWeek = monday.getDay();
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    monday.setDate(monday.getDate() - daysToMonday);
+    
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    
+    return `${monday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${sunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+  }
+
+  // Calculate total stats
+  function calculateStats() {
+    const totalWorkouts = workouts.length;
+    const totalVolume = workouts.reduce((sum, workout) => {
+      return sum + Object.values(workout.workoutData).reduce((workoutSum, entry) => {
+        return workoutSum + (entry.weight * entry.reps * entry.sets);
+      }, 0);
+    }, 0);
+    const totalSets = workouts.reduce((sum, workout) => {
+      return sum + Object.values(workout.workoutData).reduce((workoutSum, entry) => {
+        return workoutSum + entry.sets;
+      }, 0);
+    }, 0);
+    
+    return { totalWorkouts, totalVolume, totalSets };
+  }
+
+  const stats = calculateStats();
+  const calendarData = generateCalendarData();
+  const weightData = generateWeightData();
+  const maxWeight = Math.max(...weightData.map(d => d.weight), 1);
 
   // Add exerciseMap for workout type lookup
   const exerciseMap = {
@@ -294,56 +437,118 @@ function Profile() {
     <div>
       {firstName ? (
         <>
-          <div className="mb-4 flex flex-col items-center">
+          {/* Personal Profile Section */}
+          <div className="mb-6 flex flex-col items-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-3">
+              <span className="text-white text-2xl font-bold">{firstName.charAt(0).toUpperCase()}</span>
+            </div>
             <h2 className="text-3xl font-extrabold text-gray-900 mb-1 drop-shadow">{firstName}'s Stats</h2>
-            <div className="bg-green-100 text-green-800 font-semibold rounded-lg px-4 py-2 shadow-sm mb-2 text-lg">
-              Welcome back, {firstName}!
+            
+            {/* Stats Cards */}
+            <div className="grid grid-cols-3 gap-4 w-full max-w-xs mb-6">
+              <div className="bg-blue-50 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-blue-600">{stats.totalWorkouts}</div>
+                <div className="text-xs text-gray-600">Workouts</div>
+              </div>
+              <div className="bg-green-50 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-green-600">{stats.totalSets}</div>
+                <div className="text-xs text-gray-600">Total Sets</div>
+              </div>
+              <div className="bg-purple-50 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-purple-600">{Math.round(stats.totalVolume / 1000)}k</div>
+                <div className="text-xs text-gray-600">Lbs Lifted</div>
+              </div>
+            </div>
+
+            {/* Calendar Heatmap */}
+            <div className="w-full max-w-xs mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <button
+                  onClick={() => navigateMonth('prev')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                  </svg>
+                </button>
+                <h3 className="text-lg font-semibold">{getMonthName(currentMonth)}</h3>
+                <button
+                  onClick={() => navigateMonth('next')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
+              </div>
+              <div className="grid grid-cols-7 gap-1">
+                {/* Day labels */}
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+                  <div key={day} className="text-xs text-gray-500 text-center pb-1">
+                    {day}
+                  </div>
+                ))}
+                {/* Calendar days */}
+                {calendarData.map((day, idx) => (
+                  <div
+                    key={idx}
+                    className={`aspect-square rounded text-xs flex items-center justify-center ${
+                      day.isEmpty 
+                        ? 'bg-transparent' 
+                        : day.hasWorkout 
+                          ? 'bg-green-500 text-white' 
+                          : 'bg-gray-100 text-gray-400'
+                    }`}
+                    title={day.isEmpty ? '' : `${day.date}${day.hasWorkout ? ' - Workout day!' : ' - No workout'}`}
+                  >
+                    {day.day}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Weight Lifted Chart */}
+            <div className="w-full max-w-xs mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <button
+                  onClick={() => navigateWeek('prev')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                  </svg>
+                </button>
+                <h3 className="text-lg font-semibold">Weight Lifted</h3>
+                <button
+                  onClick={() => navigateWeek('next')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-gray-600 text-center mb-3">{getWeekRange(currentWeek)}</p>
+              <div className="flex items-end justify-between h-32 gap-1">
+                {weightData.map((day, idx) => (
+                  <div key={idx} className="flex flex-col items-center flex-1">
+                    <div 
+                      className="w-full bg-blue-500 rounded-t transition-all duration-300 hover:bg-blue-600"
+                      style={{ 
+                        height: `${Math.max((day.weight / maxWeight) * 100, 4)}%`,
+                        minHeight: '4px'
+                      }}
+                      title={`${day.day}: ${day.weight.toLocaleString()} lbs`}
+                    ></div>
+                    <div className="text-xs text-gray-600 mt-1">{day.day}</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 text-center mt-2">Daily total weight lifted</p>
             </div>
           </div>
-          {/* Download CSV Button */}
-          <div className="flex justify-center mb-4">
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              onClick={() => {
-                // CSV columns: Date, Day of the Week, Workout Type, Exercise, Sets, Reps, Weight Used
-                const rows = [
-                  ["Date", "Day of the Week", "Workout Type", "Exercise", "Sets", "Reps", "Weight Used"]
-                ];
-                workouts.forEach(({ date, workoutData }) => {
-                  const dayOfWeek = new Date(date).toLocaleDateString(undefined, { weekday: 'long' });
-                  Object.values(workoutData).forEach(entry => {
-                    const { exercise, weight, reps, sets } = entry;
-                    // Use local exerciseMap for workout type
-                    const workoutType = exerciseMap[exercise] || "";
-                    rows.push([
-                      date,
-                      dayOfWeek,
-                      workoutType,
-                      exercise,
-                      sets,
-                      reps,
-                      weight
-                    ]);
-                  });
-                });
-                // Convert to CSV string
-                const csv = rows.map(r => r.map(String).map(v => `"${v.replace(/"/g, '""')}"`).join(",")).join("\n");
-                // Download
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'workout_log.csv';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-              }}
-            >
-              Download as CSV
-            </button>
-          </div>
-          <h3>Workout History</h3>
+
+          <h3>Recent Workouts</h3>
           {workouts.length === 0 ? (
             <p>No workouts logged yet, go hit the gym 😤</p>
           ) : (
@@ -397,12 +602,56 @@ function Profile() {
           )}
 
           {/* Add Past Workout Button */}
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-8 mb-4">
             <button
               className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
               onClick={openAddModal}
             >
               Add Past Workout
+            </button>
+          </div>
+
+          {/* Download CSV Button - Moved to bottom */}
+          <div className="flex justify-center mb-4">
+            <button
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+              onClick={() => {
+                // CSV columns: Date, Day of the Week, Workout Type, Exercise, Sets, Reps, Weight Used
+                const rows = [
+                  ["Date", "Day of the Week", "Workout Type", "Exercise", "Sets", "Reps", "Weight Used"]
+                ];
+                workouts.forEach(({ date, workoutData }) => {
+                  const dayOfWeek = new Date(date).toLocaleDateString(undefined, { weekday: 'long' });
+                  Object.values(workoutData).forEach(entry => {
+                    const { exercise, weight, reps, sets } = entry;
+                    // Use local exerciseMap for workout type
+                    const workoutType = exerciseMap[exercise] || "";
+                    rows.push([
+                      date,
+                      dayOfWeek,
+                      workoutType,
+                      exercise,
+                      sets,
+                      reps,
+                      weight
+                    ]);
+                  });
+                });
+                // Convert to CSV string
+                const csv = rows.map(r => r.map(String).map(v => `"${v.replace(/"/g, '""')}"`).join(",")).join("\n");
+                // Download
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'workout_log.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              }}
+            >
+              Download as CSV
             </button>
           </div>
           {/* Edit Modal */}

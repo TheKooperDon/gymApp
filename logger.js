@@ -237,8 +237,9 @@ document.querySelectorAll("button[data-action]").forEach((btn) => {
     summaryText.textContent = `Workout saved for ${today} — ${totalSets} sets, ${totalReps} reps, ${totalVolume} lbs lifted.`;
     summarySection.style.display = "block";
 
-    // Save workout to localStorage for profile page
-    const dateKey = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    // Save workout to localStorage for profile page - Use American date format
+    const todayDate = new Date();
+    const dateKey = `${String(todayDate.getMonth() + 1).padStart(2, '0')}/${String(todayDate.getDate()).padStart(2, '0')}/${todayDate.getFullYear()}`;
     localStorage.setItem(
       `workout_${dateKey}`,
       JSON.stringify(grouped)
