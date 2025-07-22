@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Short Stack - Workout History</title>
+
+  <!-- React and ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel CDN for JSX support -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Tailwind CSS CDN (for development only) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind-custom.css" />
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center text-[#222] font-sans">
+  <div class="w-full max-w-[430px] min-h-[90vh] bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col">
+    <header class="bg-gray-900 text-white p-4 text-center">
+      <h1 class="text-3xl font-bold">Short Stack</h1>
+      <nav class="flex justify-center gap-6 mt-2 flex-wrap">
+        <a href="index.html" class="hover:underline">Home</a>
+        <a href="logger.html" class="hover:underline">Log Workout</a>
+        <a href="profile.html" class="hover:underline">Profile</a>
+        <a href="library.html" class="hover:underline">Exercises</a>
+      </nav>
+    </header>
+
+    <div id="root" class="flex-1 flex flex-col"></div>
+
+    <footer class="bg-gray-900 text-white text-center p-4">
+      <nav class="flex justify-center gap-4 mb-2 flex-wrap">
+        <a href="about.html" class="hover:underline">About</a>
+        <a href="settings.html" class="hover:underline">Settings</a>
+        <a href="export.html" class="hover:underline">Export</a>
+        <a href="login.html" class="hover:underline">Login</a>
+      </nav>
+      <p>&copy; 2025 Short Stack. Built with reps, sets, and love.</p>
+    </footer>
+  </div>
+
+  <!-- React history component, using Babel for JSX -->
+  <script src="historyReact.js" type="text/babel"></script>
+</body>
+</html> 

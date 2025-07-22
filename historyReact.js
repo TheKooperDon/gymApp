@@ -1,15 +1,11 @@
-//this isnt being used 
-
-// profileReact.js
 const { useState, useEffect } = React;
 
-function Profile() {
+function WorkoutHistory() {
   const [workouts, setWorkouts] = useState([]);
   const [firstName, setFirstName] = useState("");
-  const [editingWorkout, setEditingWorkout] = useState(null); // {date, workoutData}
-  const [editData, setEditData] = useState(null); // editable copy
-  const [addingWorkout, setAddingWorkout] = useState(false);
-  const [addData, setAddData] = useState({ date: '', exercises: { set0: { group: '', exercise: '', sets: 1, reps: 1, weight: 0 } } });
+  const [filter, setFilter] = useState("all"); // "all", "month", "week"
+  const [editingWorkout, setEditingWorkout] = useState(null);
+  const [editData, setEditData] = useState(null);
 
   useEffect(() => {
     // Get logged-in user
@@ -101,7 +97,27 @@ function Profile() {
     "Plank": "Core",
   };
 
-  // Modal logic
+  // Filter workouts based on selected filter
+  function getFilteredWorkouts() {
+    if (filter === "all") return workouts;
+    
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    if (filter === "week") {
+      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      return workouts.filter(w => new Date(w.date) >= weekAgo);
+    }
+    
+    if (filter === "month") {
+      const monthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+      return workouts.filter(w => new Date(w.date) >= monthAgo);
+    }
+    
+    return workouts;
+  }
+
+  // Modal logic (same as profile page)
   function openEditModal(date, workoutData) {
     setEditingWorkout({ date, workoutData });
     setEditData(JSON.parse(JSON.stringify(workoutData)));
@@ -142,12 +158,10 @@ function Profile() {
     });
   }
   function handleEditSave() {
-    // Save to localStorage
     localStorage.setItem(
       `workout_${editingWorkout.date}`,
       JSON.stringify(editData)
     );
-    // Update state
     setWorkouts(ws =>
       ws.map(w =>
         w.date === editingWorkout.date
@@ -172,7 +186,6 @@ function Profile() {
     setEditData(prev => {
       const keys = Object.keys(prev);
       const key = keys[idx];
-      // Reset exercise if group changes
       return {
         ...prev,
         [key]: {
@@ -197,163 +210,76 @@ function Profile() {
     });
   }
 
-  function openAddModal() {
-    setAddingWorkout(true);
-    setAddData({ date: '', exercises: { set0: { group: '', exercise: '', sets: 1, reps: 1, weight: 0 } } });
-  }
-  function closeAddModal() {
-    setAddingWorkout(false);
-    setAddData({ date: '', exercises: { set0: { group: '', exercise: '', sets: 1, reps: 1, weight: 0 } } });
-  }
-  function handleAddChange(idx, field, value) {
-    setAddData(prev => {
-      const keys = Object.keys(prev.exercises);
-      const key = keys[idx];
-      return {
-        ...prev,
-        exercises: {
-          ...prev.exercises,
-          [key]: {
-            ...prev.exercises[key],
-            [field]: value
-          }
-        }
-      };
-    });
-  }
-  function handleAddGroupChange(idx, group) {
-    setAddData(prev => {
-      const keys = Object.keys(prev.exercises);
-      const key = keys[idx];
-      return {
-        ...prev,
-        exercises: {
-          ...prev.exercises,
-          [key]: {
-            ...prev.exercises[key],
-            group,
-            exercise: ''
-          }
-        }
-      };
-    });
-  }
-  function handleAddExerciseChange(idx, exercise) {
-    setAddData(prev => {
-      const keys = Object.keys(prev.exercises);
-      const key = keys[idx];
-      return {
-        ...prev,
-        exercises: {
-          ...prev.exercises,
-          [key]: {
-            ...prev.exercises[key],
-            exercise
-          }
-        }
-      };
-    });
-  }
-  function handleAddRemoveSet(idx) {
-    setAddData(prev => {
-      const keys = Object.keys(prev.exercises);
-      const key = keys[idx];
-      const newData = { ...prev.exercises };
-      delete newData[key];
-      return { ...prev, exercises: newData };
-    });
-  }
-  function handleAddAddSet() {
-    setAddData(prev => {
-      const newKey = `set${Date.now()}`;
-      return {
-        ...prev,
-        exercises: {
-          ...prev.exercises,
-          [newKey]: { group: '', exercise: '', sets: 1, reps: 1, weight: 0 }
-        }
-      };
-    });
-  }
-  function handleAddSave() {
-    if (!addData.date) return;
-    // Save to localStorage
-    localStorage.setItem(
-      `workout_${addData.date}`,
-      JSON.stringify(addData.exercises)
-    );
-    // Update state
-    setWorkouts(ws => [
-      { date: addData.date, workoutData: addData.exercises },
-      ...ws.filter(w => w.date !== addData.date)
-    ]);
-    closeAddModal();
-  }
+  const filteredWorkouts = getFilteredWorkouts();
 
   return (
-    <div>
+    <main className="flex-1 p-6 flex flex-col">
       {firstName ? (
         <>
           <div className="mb-4 flex flex-col items-center">
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-1 drop-shadow">{firstName}'s Stats</h2>
-            <div className="bg-green-100 text-green-800 font-semibold rounded-lg px-4 py-2 shadow-sm mb-2 text-lg">
-              Welcome back, {firstName}!
-            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete Workout History</h2>
+            <p className="text-gray-600 mb-4">All your logged workouts</p>
           </div>
-          {/* Download CSV Button */}
-          <div className="flex justify-center mb-4">
+
+          {/* Filter Buttons */}
+          <div className="flex gap-2 mb-6 justify-center">
             <button
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              onClick={() => {
-                // CSV columns: Date, Day of the Week, Workout Type, Exercise, Sets, Reps, Weight Used
-                const rows = [
-                  ["Date", "Day of the Week", "Workout Type", "Exercise", "Sets", "Reps", "Weight Used"]
-                ];
-                workouts.forEach(({ date, workoutData }) => {
-                  const dayOfWeek = new Date(date).toLocaleDateString(undefined, { weekday: 'long' });
-                  Object.values(workoutData).forEach(entry => {
-                    const { exercise, weight, reps, sets } = entry;
-                    // Use local exerciseMap for workout type
-                    const workoutType = exerciseMap[exercise] || "";
-                    rows.push([
-                      date,
-                      dayOfWeek,
-                      workoutType,
-                      exercise,
-                      sets,
-                      reps,
-                      weight
-                    ]);
-                  });
-                });
-                // Convert to CSV string
-                const csv = rows.map(r => r.map(String).map(v => `"${v.replace(/"/g, '""')}"`).join(",")).join("\n");
-                // Download
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'workout_log.csv';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-              }}
+              className={`px-3 py-1 rounded text-sm font-medium transition ${
+                filter === "all" 
+                  ? "bg-blue-600 text-white" 
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+              onClick={() => setFilter("all")}
             >
-              Download as CSV
+              All
+            </button>
+            <button
+              className={`px-3 py-1 rounded text-sm font-medium transition ${
+                filter === "month" 
+                  ? "bg-blue-600 text-white" 
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+              onClick={() => setFilter("month")}
+            >
+              This Month
+            </button>
+            <button
+              className={`px-3 py-1 rounded text-sm font-medium transition ${
+                filter === "week" 
+                  ? "bg-blue-600 text-white" 
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+              onClick={() => setFilter("week")}
+            >
+              This Week
             </button>
           </div>
-          <h3>Workout History</h3>
-          {workouts.length === 0 ? (
-            <p>No workouts logged yet, go hit the gym 😤</p>
+
+          {/* Workout Count */}
+          <div className="text-center mb-4">
+            <p className="text-gray-600">
+              Showing {filteredWorkouts.length} of {workouts.length} workouts
+            </p>
+          </div>
+
+          {/* Workout List */}
+          {filteredWorkouts.length === 0 ? (
+            <div className="text-center mt-8">
+              <p className="text-gray-600">
+                {filter === "all" 
+                  ? "No workouts logged yet" 
+                  : `No workouts in the last ${filter === "week" ? "week" : "month"}`
+                }
+              </p>
+            </div>
           ) : (
-            <>
-              {workouts.slice(0, 2).map(({ date, workoutData }, idx) => {
+            <div className="space-y-4">
+              {filteredWorkouts.map(({ date, workoutData }, idx) => {
                 let totalVolume = 0;
                 return (
                   <div
                     key={idx}
-                    className="bg-white border border-gray-200 shadow-md rounded-xl mb-6 p-4 transition hover:shadow-lg relative"
+                    className="bg-white border border-gray-200 shadow-md rounded-xl p-4 transition hover:shadow-lg relative"
                   >
                     <button
                       className="absolute top-2 right-2 text-gray-400 hover:text-blue-600"
@@ -385,27 +311,10 @@ function Profile() {
                   </div>
                 );
               })}
-              {workouts.length > 2 && (
-                <div className="text-center mb-4">
-                  <p className="text-gray-600 mb-2">Showing 2 of {workouts.length} workouts</p>
-                  <a href="history.html" className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                    View All Workouts
-                  </a>
-                </div>
-              )}
-            </>
+            </div>
           )}
 
-          {/* Add Past Workout Button */}
-          <div className="flex justify-center mt-8">
-            <button
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              onClick={openAddModal}
-            >
-              Add Past Workout
-            </button>
-          </div>
-          {/* Edit Modal */}
+          {/* Edit Modal (same as profile page) */}
           {editingWorkout && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
               <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md relative">
@@ -436,7 +345,6 @@ function Profile() {
                           onClick={() => handleRemoveSet(i)}
                         >Remove</button>
                       </div>
-                      {/* Muscle group dropdown */}
                       <label className="block text-xs font-medium text-gray-600 mb-1">Body Type</label>
                       <select
                         className="w-full border rounded px-2 py-1 mb-1"
@@ -449,7 +357,6 @@ function Profile() {
                           <option key={g} value={g}>{g}</option>
                         ))}
                       </select>
-                      {/* Exercise dropdown */}
                       <label className="block text-xs font-medium text-gray-600 mb-1">Exercise Name</label>
                       <select
                         className="w-full border rounded px-2 py-1 mb-1"
@@ -524,140 +431,16 @@ function Profile() {
               </div>
             </div>
           )}
-          {/* Add Modal */}
-          {addingWorkout && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md relative">
-                <button
-                  className="absolute top-2 right-2 text-gray-400 hover:text-red-600"
-                  onClick={closeAddModal}
-                  title="Close"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-                <h3 className="text-xl font-bold mb-4">Add Past Workout</h3>
-                <form
-                  onSubmit={e => {
-                    e.preventDefault();
-                    handleAddSave();
-                  }}
-                  className="space-y-4"
-                >
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Date</label>
-                  <input
-                    type="date"
-                    className="w-full border rounded px-2 py-1 mb-2"
-                    value={addData.date}
-                    onChange={e => setAddData(prev => ({ ...prev, date: e.target.value }))}
-                    required
-                  />
-                  {Object.entries(addData.exercises).map(([key, entry], i) => (
-                    <div key={key} className="border-b pb-2 mb-2">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold">Exercise {i + 1}</span>
-                        <button
-                          type="button"
-                          className="text-xs text-red-500 hover:underline"
-                          onClick={() => handleAddRemoveSet(i)}
-                        >Remove</button>
-                      </div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Body Type</label>
-                      <select
-                        className="w-full border rounded px-2 py-1 mb-1"
-                        value={entry.group || ''}
-                        onChange={e => handleAddGroupChange(i, e.target.value)}
-                        required
-                      >
-                        <option value="">Select body type</option>
-                        {muscleGroups.map(g => (
-                          <option key={g} value={g}>{g}</option>
-                        ))}
-                      </select>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Exercise Name</label>
-                      <select
-                        className="w-full border rounded px-2 py-1 mb-1"
-                        value={entry.exercise}
-                        onChange={e => handleAddExerciseChange(i, e.target.value)}
-                        required
-                        disabled={!entry.group}
-                      >
-                        <option value="">Select exercise</option>
-                        {entry.group && getExercisesForGroup(entry.group).map(ex => (
-                          <option key={ex} value={ex}>{ex}</option>
-                        ))}
-                      </select>
-                      <div className="flex gap-2 mt-2">
-                        <div className="flex-1">
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Sets</label>
-                          <input
-                            type="number"
-                            className="w-full border rounded px-2 py-1"
-                            value={entry.sets}
-                            min={1}
-                            onChange={e => handleAddChange(i, 'sets', Number(e.target.value))}
-                            placeholder="Sets"
-                            required
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Reps</label>
-                          <input
-                            type="number"
-                            className="w-full border rounded px-2 py-1"
-                            value={entry.reps}
-                            min={1}
-                            onChange={e => handleAddChange(i, 'reps', Number(e.target.value))}
-                            placeholder="Reps"
-                            required
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Weight (lbs)</label>
-                          <input
-                            type="number"
-                            className="w-full border rounded px-2 py-1"
-                            value={entry.weight}
-                            min={0}
-                            onChange={e => handleAddChange(i, 'weight', Number(e.target.value))}
-                            placeholder="Weight"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="w-full bg-gray-200 text-blue-700 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-300 transition mb-2"
-                    onClick={handleAddAddSet}
-                  >Add Exercise</button>
-                  <div className="flex gap-2">
-                    <button
-                      type="submit"
-                      className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition"
-                    >Save</button>
-                    <button
-                      type="button"
-                      className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition"
-                      onClick={closeAddModal}
-                    >Cancel</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
         </>
       ) : (
         <div className="text-center mt-8">
-          <h2>Your Profile & Stats</h2>
-          <p className="mt-4 text-lg text-gray-700">No account found. <a href="signup.html" className="text-blue-600 underline">Sign up</a> or <a href="login.html" className="text-blue-600 underline">log in</a> to see your stats.</p>
+          <h2>Workout History</h2>
+          <p className="mt-4 text-lg text-gray-700">No account found. <a href="signup.html" className="text-blue-600 underline">Sign up</a> or <a href="login.html" className="text-blue-600 underline">log in</a> to see your history.</p>
         </div>
       )}
-    </div>
+    </main>
   );
 }
 
-// Render to a root element
-ReactDOM.render(<Profile />, document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<WorkoutHistory />); 
