@@ -24,34 +24,13 @@ function Profile() {
     if (user && user.firstName) {
       const keys = Object.keys(localStorage).filter(key => key.startsWith("workout_"));
       keys.sort().reverse();
-      console.log('=== WORKOUT LOADING DEBUG ===');
-      console.log('Found workout keys:', keys);
       
       const data = keys.map(key => {
         const date = key.replace("workout_", "");
         const workoutData = JSON.parse(localStorage.getItem(key));
-        
-        console.log(`Processing key: ${key}, original date: ${date}`);
-        
-        // Convert old date format (YYYY-MM-DD) to new format (MM/DD/YYYY)
-        let newDate = date;
-        if (date.includes('-')) {
-          const [year, month, day] = date.split('-');
-          newDate = `${month}/${day}/${year}`;
-          
-          console.log(`Converting ${date} to ${newDate}`);
-          
-          // Update localStorage with new key
-          localStorage.removeItem(key);
-          localStorage.setItem(`workout_${newDate}`, JSON.stringify(workoutData));
-        }
-        
-        console.log(`Final date: ${newDate}, workout data:`, workoutData);
-        
-        return { date: newDate, workoutData };
+        return { date, workoutData };
       });
       
-      console.log('Final processed workouts:', data);
       setWorkouts(data);
     } else {
       setWorkouts([]);
@@ -79,6 +58,7 @@ function Profile() {
     // Add all days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${String(month + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}/${year}`;
+      const currentDate = new Date(year, month, day);
       const hasWorkout = workouts.some(w => w.date === dateStr);
       calendar.push({
         day,
@@ -117,26 +97,24 @@ function Profile() {
     const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Sunday = 0, so Monday = 1
     monday.setDate(monday.getDate() - daysToMonday);
     
-    console.log('=== WEIGHT CHART DEBUG ===');
-    console.log('Current week date:', currentWeek);
-    console.log('Monday of current week:', monday);
-    console.log('Available workout dates:', workouts.map(w => w.date));
-    
     // Generate data for each day of the week (Monday to Sunday)
     for (let i = 0; i < 7; i++) {
       const date = new Date(monday);
       date.setDate(monday.getDate() + i);
+      
+      // Use the same date format as stored workouts (MM/DD/YYYY)
       const dateStr = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;
+      
+      // Find workout for this date using Date object comparison instead of string comparison
       const workout = workouts.find(w => w.date === dateStr);
       
       let totalWeight = 0;
       if (workout) {
+        // Calculate total weight for this workout
         Object.values(workout.workoutData).forEach(entry => {
           totalWeight += entry.weight * entry.reps * entry.sets;
         });
       }
-      
-      console.log(`Day ${i + 1}: ${dateStr} (${date.toLocaleDateString('en-US', { weekday: 'short' })}) - Found workout: ${!!workout}, Total weight: ${totalWeight}`);
       
       weightData.push({
         date: dateStr,
@@ -144,10 +122,6 @@ function Profile() {
         day: date.toLocaleDateString('en-US', { weekday: 'short' })
       });
     }
-    
-    console.log('Final weight data:', weightData);
-    console.log('Max weight:', Math.max(...weightData.map(d => d.weight), 1));
-    console.log('=== END DEBUG ===');
     
     return weightData;
   }
@@ -193,6 +167,7 @@ function Profile() {
     return { totalWorkouts, totalVolume, totalSets };
   }
 
+  // Calculate stats and data - moved inside render to ensure workouts are loaded
   const stats = calculateStats();
   const calendarData = generateCalendarData();
   const weightData = generateWeightData();
@@ -457,7 +432,6 @@ function Profile() {
 
   return (
     <div>
-      {console.log('PROFILE COMPONENT RENDERING - DEBUG IS WORKING')}
       {firstName ? (
         <>
           {/* Personal Profile Section */}
@@ -555,7 +529,6 @@ function Profile() {
               <div className="flex items-end justify-between h-32 gap-1">
                 {weightData.map((day, idx) => {
                   const heightPercent = day.weight > 0 ? Math.max((day.weight / maxWeight) * 100, 4) : 4;
-                  console.log(`Chart bar ${idx}: ${day.day}, weight: ${day.weight}, height: ${heightPercent}%`);
                   return (
                     <div key={idx} className="flex flex-col items-center flex-1">
                       <div 
@@ -935,9 +908,6 @@ function Profile() {
   );
 }
 
-// Replace this line:
-ReactDOM.render(<Profile />, document.getElementById('root'));
-
-// With this:
+// Render to a root element using React 18 API
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Profile />);

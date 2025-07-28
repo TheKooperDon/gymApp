@@ -147,7 +147,7 @@ function Logger() {
     const today = new Date().toLocaleDateString();
     setSummary(`Workout saved for ${today} — ${totalSets} sets, ${totalReps} reps, ${totalVolume} lbs lifted.`);
     // Save to localStorage by date
-    const dateKey = new Date().toISOString().slice(0, 10);
+    const dateKey = new Date().toLocaleDateString();
     localStorage.setItem(`workout_${dateKey}`, JSON.stringify(grouped));
     alert("Workout saved! 💾 Time to go flex 💪");
   }
