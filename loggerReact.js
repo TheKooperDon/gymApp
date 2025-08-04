@@ -7,6 +7,14 @@
 
 const { useState } = React;
 
+// Helper function to format dates consistently as MM/DD/YYYY
+function formatDateMMDDYYYY(date) {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+
 // ===========================
 // 🧠 Exercise Map: All Exercises Grouped by Category
 // ===========================
@@ -146,7 +154,7 @@ function Logger() {
     }
     const today = new Date().toLocaleDateString();
     setSummary(`Workout saved for ${today} — ${totalSets} sets, ${totalReps} reps, ${totalVolume} lbs lifted.`);
-    // Save to localStorage by date
+    // Save to localStorage by date using consistent MM/DD/YYYY format
     const dateKey = new Date().toLocaleDateString();
     localStorage.setItem(`workout_${dateKey}`, JSON.stringify(grouped));
     alert("Workout saved! 💾 Time to go flex 💪");

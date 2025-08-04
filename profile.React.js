@@ -1,7 +1,20 @@
-//this isnt being used 
 
 // profileReact.js
 const { useState, useEffect } = React;
+
+// Helper function to format dates as YYYY-MM-DD for internal storage and comparison
+function formatDateYYYYMMDD(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// Helper function to format dates as MM/DD/YYYY for display
+function formatDateForDisplay(dateStr) {
+  const [year, month, day] = dateStr.split('-');
+  return `${parseInt(month)}/${parseInt(day)}/${year}`;
+}
 
 function Profile() {
   const [workouts, setWorkouts] = useState([]);
@@ -28,7 +41,20 @@ function Profile() {
       const data = keys.map(key => {
         const date = key.replace("workout_", "");
         const workoutData = JSON.parse(localStorage.getItem(key));
-        return { date, workoutData };
+        
+        // Convert any old format to YYYY-MM-DD for internal storage
+        let newDate = date;
+        if (!date.includes('-')) {
+          // Convert MM/DD/YYYY to YYYY-MM-DD
+          const [month, day, year] = date.split('/');
+          newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+          
+          // ✅ Migrate key in localStorage
+          localStorage.removeItem(key);
+          localStorage.setItem(`workout_${newDate}`, JSON.stringify(workoutData));
+        }
+        
+        return { date: newDate, workoutData };
       });
       
       setWorkouts(data);
@@ -36,7 +62,7 @@ function Profile() {
       setWorkouts([]);
     }
   }, []);
-
+ 
   // Generate calendar data for the current month
   function generateCalendarData() {
     const year = currentMonth.getFullYear();
@@ -57,8 +83,8 @@ function Profile() {
     
     // Add all days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${String(month + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}/${year}`;
       const currentDate = new Date(year, month, day);
+      const dateStr = formatDateYYYYMMDD(currentDate);
       const hasWorkout = workouts.some(w => w.date === dateStr);
       calendar.push({
         day,
@@ -89,12 +115,13 @@ function Profile() {
 
   // Generate weight lifted data for the current week (Monday to Sunday)
   function generateWeightData() {
+    console.log("=== generateWeightData called ===");
     const weightData = [];
     
     // Get Monday of current week
     const monday = new Date(currentWeek);
     const dayOfWeek = monday.getDay();
-    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Sunday = 0, so Monday = 1
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
     monday.setDate(monday.getDate() - daysToMonday);
     
     // Generate data for each day of the week (Monday to Sunday)
@@ -102,11 +129,15 @@ function Profile() {
       const date = new Date(monday);
       date.setDate(monday.getDate() + i);
       
-      // Use the same date format as stored workouts (MM/DD/YYYY)
-      const dateStr = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;
+      // Use MM/DD/YYYY format to match logger
+      const dateStr = date.toLocaleDateString();
       
-      // Find workout for this date using Date object comparison instead of string comparison
+      // Find workout for this date
       const workout = workouts.find(w => w.date === dateStr);
+      console.log(`Day ${i}: ${dateStr} - Found workout:`, !!workout);
+      console.log(`Looking for: ${dateStr}`);
+      console.log(`Available dates:`, workouts.map(w => w.date));
+      console.log(`Match found:`, workouts.find(w => w.date === dateStr));
       
       let totalWeight = 0;
       if (workout) {
@@ -417,16 +448,22 @@ function Profile() {
   }
   function handleAddSave() {
     if (!addData.date) return;
-    // Save to localStorage
+    
+    // The date input already returns YYYY-MM-DD format, so we can use it directly
+    const formattedDate = addData.date;
+    
+    // Save to localStorage with YYYY-MM-DD format
     localStorage.setItem(
-      `workout_${addData.date}`,
+      `workout_${formattedDate}`,
       JSON.stringify(addData.exercises)
     );
-    // Update state
+    
+    // Update state with YYYY-MM-DD format
     setWorkouts(ws => [
-      { date: addData.date, workoutData: addData.exercises },
-      ...ws.filter(w => w.date !== addData.date)
+      { date: formattedDate, workoutData: addData.exercises },
+      ...ws.filter(w => w.date !== formattedDate)
     ]);
+    
     closeAddModal();
   }
 
@@ -529,13 +566,15 @@ function Profile() {
               <div className="flex items-end justify-between h-32 gap-1">
                 {weightData.map((day, idx) => {
                   const heightPercent = day.weight > 0 ? Math.max((day.weight / maxWeight) * 100, 4) : 4;
+                  console.log(`Bar ${idx}: ${day.day}, weight: ${day.weight}, maxWeight: ${maxWeight}, heightPercent: ${heightPercent}%`);
                   return (
                     <div key={idx} className="flex flex-col items-center flex-1">
                       <div 
-                        className="w-full bg-blue-500 rounded-t transition-all duration-300 hover:bg-blue-600"
+                        className="w-full bg-green-500 rounded-t transition-all duration-300 hover:bg-green-600"
                         style={{ 
                           height: `${heightPercent}%`,
-                          minHeight: '4px'
+                          minHeight: '8px',
+                          border: '1px solid black'
                         }}
                         title={`${day.day}: ${day.weight.toLocaleString()} lbs`}
                       ></div>
@@ -569,7 +608,7 @@ function Profile() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487a2.1 2.1 0 1 1 2.97 2.97L7.5 19.789l-4 1 1-4 13.362-13.302z" />
                       </svg>
                     </button>
-                    <h4 className="text-lg font-semibold text-blue-700 mb-2">Workout for {date}</h4>
+                    <h4 className="text-lg font-semibold text-blue-700 mb-2">Workout for {formatDateForDisplay(date)}</h4>
                     <ul className="mb-2 space-y-1">
                       {Object.values(workoutData).map((entry, i) => {
                         const { exercise, weight, reps, sets } = entry;
