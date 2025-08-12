@@ -1,3 +1,5 @@
+//this isnt being used. 
+
 // Wait for the DOM to be fully loaded before running the script
 window.addEventListener("DOMContentLoaded", () => {
     // Get the element where workouts will be displayed

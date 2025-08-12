@@ -1,64 +1,103 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Short Stack Test - Quick Pad</title>
+  <meta charset="UTF-8" />
+  <title>Weight Chart Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body>
+<body class="bg-gray-100 p-10 font-sans text-[#222]">
+  <div id="root" class="max-w-xl mx-auto"></div>
 
-  <h2>Weight Input with Quick Pad</h2>
+  <script type="text/babel">
+    const { useEffect, useState } = React;
 
-  <div class="form-row">
-    <label for="weight">Weight (lbs):</label>
-    <div class="input-group">
-      <button type="button" class="adjust-btn" data-target="weight" data-action="decrease">-</button>
-      <input type="number" id="weight" name="weight" inputmode="decimal" />
-      <button type="button" class="adjust-btn" data-target="weight" data-action="increase">+</button>
-    </div>
-    <button id="togglePadBtn" type="button">Quick Pick</button>
-  </div>
+    function formatDateMMDDYYYY(date) {
+      const m = date.getMonth() + 1;
+      const d = date.getDate();
+      const y = date.getFullYear();
+      return `${m}/${d}/${y}`;
+    }
 
-  <div id="weightQuickPad" style="display: none;">
-    <div>
-      <button type="button" class="pad-btn">5</button>
-      <button type="button" class="pad-btn">10</button>
-      <button type="button" class="pad-btn">15</button>
-    </div>
-    <div>
-      <button type="button" class="pad-btn">20</button>
-      <button type="button" class="pad-btn">25</button>
-      <button type="button" class="pad-btn">30</button>
-    </div>
-    <div>
-      <button type="button" class="pad-btn">35</button>
-      <button type="button" class="pad-btn">40</button>
-      <button type="button" class="pad-btn">Clear</button>
-    </div>
-  </div>
+    function isSameDate(a, b) {
+      return (
+        a.getDate() === b.getDate() &&
+        a.getMonth() === b.getMonth() &&
+        a.getFullYear() === b.getFullYear()
+      );
+    }
 
-  <script>
-    const weightInput = document.getElementById("weight");
-    const weightPad = document.getElementById("weightQuickPad");
-    const togglePadBtn = document.getElementById("togglePadBtn");
+    const mockWorkouts = [
+      {
+        date: "7/28/2025",
+        workoutData: {
+          set0: { weight: 50, reps: 10 },
+          set1: { weight: 60, reps: 8 },
+        },
+      },
+      {
+        date: "7/30/2025",
+        workoutData: {
+          set0: { weight: 45, reps: 12 },
+          set1: { weight: 45, reps: 10 },
+        },
+      },
+    ];
 
-    // Toggle the pad when clicking the toggle button
-    togglePadBtn.addEventListener("click", () => {
-      weightPad.style.display = (weightPad.style.display === "flex") ? "none" : "flex";
-    });
+    function ChartTest() {
+      const [chartData, setChartData] = useState([]);
 
-    // Handle quick pad button clicks
-    document.querySelectorAll("#weightQuickPad .pad-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const val = btn.textContent;
-        if (val === "Clear") {
-          weightInput.value = "";
-        } else {
-          weightInput.value = val;
+      useEffect(() => {
+        const now = new Date();
+        const start = new Date(now);
+        start.setDate(start.getDate() - 6);
+
+        const data = [];
+
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(start);
+          date.setDate(start.getDate() + i);
+          const dateStr = formatDateMMDDYYYY(date);
+
+          const workout = mockWorkouts.find(w =>
+            formatDateMMDDYYYY(new Date(w.date)) === dateStr
+          );
+
+          let volume = 0;
+
+          if (workout) {
+            const sets = Object.values(workout.workoutData);
+            volume = sets.reduce((total, set) => total + (set.weight * set.reps), 0);
+          }
+
+          console.log(`Day ${i} [${dateStr}]:`, workout ? "✅ Found" : "❌ Not found", "Volume:", volume);
+
+          data.push({ date: dateStr, volume });
         }
-      });
-    });
-  </script>
 
+        setChartData(data);
+      }, []);
+
+      return (
+        <div>
+          <h1 className="text-2xl font-bold mb-4">Weekly Volume Chart</h1>
+          <div className="space-y-2">
+            {chartData.map((entry, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <div className="w-24">{entry.date}</div>
+                <div className="bg-green-400 h-6" style={{ width: `${entry.volume}px` }}>
+                  <span className="text-white pl-2">{entry.volume} lbs</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<ChartTest />, document.getElementById("root"));
+  </script>
 </body>
 </html>
